@@ -1,17 +1,40 @@
-﻿using System;
+﻿using System.Linq;
+using Gamefication.DTO;
 
 namespace Gamefication.Storages
 {
     internal class EventReaderPointerStorage : IEventReaderPointerStorage
     {
-        public Guid? TryGetLastProcessedEventId()
+        public long GetLastProcessedEventId()
         {
-            throw new NotImplementedException();
+            using (var db = new ApplicationContext())
+            {
+                var persistedEventId = db.LastProcessedEvent.FirstOrDefault(x => x.Id == 0);
+                return persistedEventId?.EventId ?? 0;
+            }
         }
 
-        public void UpdateLastProcessedEventId(Guid lastProcessedEventId)
+        public void UpdateLastProcessedEventId(long lastProcessedEventId)
         {
-            throw new NotImplementedException();
+            using (var db = new ApplicationContext())
+            {
+                var oldState = db.LastProcessedEvent.FirstOrDefault(x => x.Id == 0);
+                if (oldState == null)
+                {
+                    db.LastProcessedEvent.Add(new SqlLastProcessedEvent
+                    {
+                        Id = 0,
+                        EventId = lastProcessedEventId
+                    });
+                }
+                else
+                {
+                    oldState.EventId = lastProcessedEventId;
+                    db.LastProcessedEvent.Update(oldState);
+                }
+
+                db.SaveChanges();
+            }
         }
     }
 }

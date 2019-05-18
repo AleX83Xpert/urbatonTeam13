@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace Gamefication.Storages
+﻿namespace Gamefication.Storages
 {
     internal interface IEventReaderPointerStorage
     {
-        Guid? TryGetLastProcessedEventId();
-        void UpdateLastProcessedEventId(Guid lastProcessedEventId);
+        long GetLastProcessedEventId();
+        void UpdateLastProcessedEventId(long lastProcessedEventId);
     }
 }
