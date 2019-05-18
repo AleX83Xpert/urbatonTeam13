@@ -25,3 +25,7 @@ yarn-error.log*
 
 .idea
 
+# python
+.python-version
+venv
+__pycache__
