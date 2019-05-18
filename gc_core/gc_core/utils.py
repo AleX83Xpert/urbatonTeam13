@@ -36,6 +36,7 @@ def check_auth(*roles):
         @wraps(func)
         def wrap(*arg, **kw):
             logger.info("SESSION: %s" % session)
+
             # find session
             if "username" in session and session["expire"] > datetime.datetime.now():
                 session["expire"] = datetime.datetime.now() + env.expire_delta
