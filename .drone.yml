@@ -21,5 +21,5 @@ pipeline:
       - git reset HEAD --hard
       - git checkout ${DRONE_COMMIT_BRANCH}
       - git reset --hard origin/${DRONE_COMMIT_BRANCH}
-      - docker-compose build base web
-      - docker-compose up -d web
+      - docker-compose build
+      - docker-compose up -d
