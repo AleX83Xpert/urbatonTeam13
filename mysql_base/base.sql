@@ -48,3 +48,24 @@ create table garbage_collector.delivery_points (
 	PRIMARY KEY (id),
 	FOREIGN KEY (`user`) REFERENCES users (id)
 );
+
+-- type citizen, collector, admin
+insert into users values (null, 'test_user', md5('test_password'), now(), 'citizen'),
+	(null, 'test_collector', md5('test_passwd'), now(), 'collector'),
+	(null, 'test_collector2', md5('test_passwd2'), now(), 'collector');
+
+create table  garbage_collector.garbage_types (
+	id bigint NOT NULL AUTO_INCREMENT,
+	name varchar(255),
+	unit varchar(255),
+	PRIMARY KEY (id)
+);
+
+create table  garbage_collector.delivery_point_garbage_types (
+	id bigint NOT NULL AUTO_INCREMENT,
+	`type` bigint not null,
+	point bigint not null,
+	PRIMARY KEY (id),
+	FOREIGN KEY (`type`) REFERENCES garbage_types (id),
+	FOREIGN KEY (point) REFERENCES delivery_points (id)
+);
