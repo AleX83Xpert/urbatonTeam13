@@ -1,8 +1,6 @@
 import pymysql
 import configparser
 
-global goodObject
-
 #global_config = configparser.ConfigParser()
 #global_config.read('__conf__/production.conf')
 #print(global_config['mysql'])
