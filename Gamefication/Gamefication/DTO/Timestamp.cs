@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace Gamefication.DTO
 {
-    [JsonConverter(typeof(StringTimestampConverter))]
     public sealed class Timestamp : IEquatable<Timestamp>, IComparable<Timestamp>
     {
         public static readonly Timestamp MinValue = new Timestamp(DateTime.MinValue.Ticks);

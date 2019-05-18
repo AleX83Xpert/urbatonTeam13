@@ -1,2 +1,4 @@
 flask
 webargs
+pymysql
+configparser
