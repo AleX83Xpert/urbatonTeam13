@@ -3,14 +3,17 @@ using JetBrains.Annotations;
 
 namespace Gamefication.DTO
 {
-    [ComplexType]
-    public class Lot
+    public class SqlEvent
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
 
-        public LotType LotType { get; set; }
+        public ulong CitizenId { get; set; }
 
-        [NotNull] public Quantity Quantity { get; set; }
+        public ulong CollectorId { get; set; }
+
+        [NotNull] public long TimestampTicks { get; set; }
+
+        [NotNull] public Lot Lot { get; set; }
     }
 }

@@ -5,6 +5,7 @@ from gc_core.blueprints.collector import bp_collector
 from gc_core.blueprints.claim import bp_claim
 from gc_core.blueprints.login import bp_login
 from gc_core.blueprints.citizen import bp_citizen
+from gc_core.blueprints.garbage_type import bp_garbage
 
 
 def mount(app: Flask):
@@ -13,3 +14,4 @@ def mount(app: Flask):
     app.register_blueprint(bp_claim, url_prefix="/claims")
     app.register_blueprint(bp_login, url_prefix="/login")
     app.register_blueprint(bp_citizen, url_prefix="/citizens")
+    app.register_blueprint(bp_garbage, url_prefix="/garbage")

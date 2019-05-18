@@ -11,13 +11,6 @@ search_args = {
     "login": fields.Str(required=False)
 }
 
-host="localhost"
-user="user"
-password="passwd"
-db="db"
-charset="utf8mb4"
-cursorclass=pymysql.cursors.DictCursor
- 
 @bp_citizen.route("/search", methods=["GET"])
 @use_args(search_args)
 def search(args):
