@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify
 from webargs import fields
 from webargs.flaskparser import use_args
 
+from . import goodObject
 bp_collector = Blueprint("collectors", __name__)
 
 search_args = {
