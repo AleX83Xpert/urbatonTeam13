@@ -3,6 +3,7 @@ using System.Linq;
 using Gamefication.DTO;
 using Gamefication.Storages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 
 namespace Tests
 {
@@ -12,11 +13,11 @@ namespace Tests
         [TestMethod]
         public void Test()
         {
-            using (var db = new ApplicationContext())
-            {
-                db.ClearDatabase();
-                db.EnsureDatabaseCreated();
-            }
+            //using (var db = new ApplicationContext())
+            //{
+            //    db.ClearDatabase();
+            //    db.EnsureDatabaseCreated();
+            //}
 
             WriteEvents(1234);
 
@@ -38,10 +39,10 @@ namespace Tests
                 for (var i = 0; i < count; i++)
                     db.Events.Add(new SqlEvent
                     {
-                        CitizenId = (ulong) random.Next(100),
-                        CollectorId = (ulong) random.Next(100),
+                        CitizenId = random.Next(100),
+                        CollectorId = random.Next(100),
                         TimestampTicks = new Timestamp(DateTime.Now).Ticks,
-                        Lot = new Lot
+                        LotJson = JsonConvert.SerializeObject(new Lot
                         {
                             LotType = (LotType) random.Next(3),
                             Quantity = new Quantity
@@ -49,7 +50,7 @@ namespace Tests
                                 MeasurementUnit = "kg",
                                 Value = (decimal) random.NextDouble()
                             }
-                        }
+                        })
                     });
 
                 db.SaveChanges();
