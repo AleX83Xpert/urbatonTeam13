@@ -1,0 +1,25 @@
+
+# RUN container when DB in test would be needed (and add wait_db.sh script !!)
+pipeline:
+  release:
+    image: appleboy/drone-ssh
+    when:
+      event: push
+#      branch:
+#        - master
+    host:
+      from_secret: deploy_host
+    username:
+      from_secret: deploy_user
+    secrets: [ ssh_key ]
+    port: 22
+    script:
+      - set -e
+#      - source ~/.bashrc
+      - cd urbatonTeam13
+      - git fetch
+      - git reset HEAD --hard
+      - git checkout ${DRONE_COMMIT_BRANCH}
+      - git reset --hard origin/${DRONE_COMMIT_BRANCH}
+      - docker-compose build base web
+      - docker-compose up -d web
