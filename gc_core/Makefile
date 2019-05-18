@@ -11,8 +11,7 @@ venv:
 
 
 upgrade:
-	$(ACTIVATE)
-	pip install -U -r requirements.txt
+	$(ACTIVATE) && pip install -U -r requirements.txt
 
 clean:
 	$(RM) -R venv

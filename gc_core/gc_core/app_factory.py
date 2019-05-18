@@ -3,6 +3,7 @@ from flask import Flask
 
 from gc_core.mount import mount
 
+
 def factory():
     setup_logging()
     app = Flask(__name__)
