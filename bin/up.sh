@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
+set -e
+
 git fetch
 git reset --hard
-git reset origin master --hard
+git reset --hard origin/master
 
 LOCATION="$(pwd)/.."
 
