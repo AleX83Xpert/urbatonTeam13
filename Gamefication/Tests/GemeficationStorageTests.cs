@@ -10,11 +10,11 @@ namespace Tests
         [TestMethod]
         public void Test()
         {
-            using (var db = new ApplicationContext())
-            {
-                db.ClearDatabase();
-                db.EnsureDatabaseCreated();
-            }
+            //using (var db = new ApplicationContext())
+            //{
+            //    db.ClearDatabase();
+            //    db.EnsureDatabaseCreated();
+            //}
 
             var storage = new GameficationStateStorage();
             var expectedState = new SqlGameficationState

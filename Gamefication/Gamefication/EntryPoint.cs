@@ -5,9 +5,9 @@ using Gamefication.Storages;
 
 namespace Gamefication
 {
-    internal class EntryPoint
+    public class EntryPoint
     {
-        private static void Main()
+        public static void Main()
         {
             new EntryPoint().Start();
         }

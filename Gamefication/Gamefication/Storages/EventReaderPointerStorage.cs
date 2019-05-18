@@ -9,7 +9,7 @@ namespace Gamefication.Storages
         {
             using (var db = new ApplicationContext())
             {
-                var persistedEventId = db.LastProcessedEvent.FirstOrDefault(x => x.Id == 0);
+                var persistedEventId = db.LastProcessedEvent.FirstOrDefault(x => x.Id == 1);
                 return persistedEventId?.EventId ?? 0;
             }
         }
@@ -18,12 +18,12 @@ namespace Gamefication.Storages
         {
             using (var db = new ApplicationContext())
             {
-                var oldState = db.LastProcessedEvent.FirstOrDefault(x => x.Id == 0);
+                var oldState = db.LastProcessedEvent.FirstOrDefault(x => x.Id == 1);
                 if (oldState == null)
                 {
                     db.LastProcessedEvent.Add(new SqlLastProcessedEvent
                     {
-                        Id = 0,
+                        Id = 1,
                         EventId = lastProcessedEventId
                     });
                 }

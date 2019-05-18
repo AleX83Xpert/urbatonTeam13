@@ -8,6 +8,6 @@ namespace Gamefication.Storages
         void UpdateState([NotNull] SqlGameficationState state);
 
         [CanBeNull]
-        SqlGameficationState TryGetState(ulong userId);
+        SqlGameficationState TryGetState(long userId);
     }
 }

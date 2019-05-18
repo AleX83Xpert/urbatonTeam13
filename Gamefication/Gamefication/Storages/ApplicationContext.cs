@@ -24,7 +24,7 @@ namespace Gamefication.Storages
 
         protected override void OnConfiguring([NotNull] DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=helloappdb;Trusted_Connection=True;");
+            optionsBuilder.UseMySQL("server=hacathon.liinda.ru;database=garbage_collector;user=ubuntu;password=qwertyasdfgh");
         }
     }
 }
