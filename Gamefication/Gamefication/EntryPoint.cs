@@ -15,7 +15,7 @@ namespace Gamefication
         private void Start()
         {
             var eventFeed = new EventFeed(new EventReaderPointerStorage(), new EventReader());
-            var eventProcessor = new EventProcessor();
+            var eventProcessor = new EventProcessor(new GameficationStateStorage());
             new ThreadBasedPeriodicTaskRunner().Register(
                 "ProcessEventsTask",
                 TimeSpan.FromSeconds(10),

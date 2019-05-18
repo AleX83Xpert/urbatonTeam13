@@ -18,16 +18,16 @@ namespace Gamefication
             this.eventReader = eventReader;
         }
 
-        public void ConsumeNextEventBatch([NotNull] Action<Event[]> processEventsAction)
+        public void ConsumeNextEventBatch([NotNull] Action<SqlEvent[]> processEventsAction)
         {
-            var lastProcessedEventId = eventReaderPointerStorage.TryGetLastProcessedEventId();
+            var lastProcessedEventId = eventReaderPointerStorage.GetLastProcessedEventId();
             var newEvents = eventReader.GetEvents(lastProcessedEventId);
 
             if (!newEvents.Any())
                 return;
 
             processEventsAction(newEvents);
-            eventReaderPointerStorage.UpdateLastProcessedEventId(newEvents.Last().EventId);
+            eventReaderPointerStorage.UpdateLastProcessedEventId(newEvents.Last().Id);
         }
     }
 }

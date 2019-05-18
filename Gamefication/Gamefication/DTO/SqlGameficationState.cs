@@ -1,16 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using JetBrains.Annotations;
 
 namespace Gamefication.DTO
 {
-    [ComplexType]
-    public class Lot
+    public class SqlGameficationState
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
 
-        public LotType LotType { get; set; }
+        public ulong UserId { get; set; }
 
-        [NotNull] public Quantity Quantity { get; set; }
+        public double Loyalty { get; set; }
     }
 }
