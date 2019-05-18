@@ -1,5 +1,4 @@
-﻿using System;
-using Gamefication.DTO;
+﻿using Gamefication.DTO;
 using JetBrains.Annotations;
 
 namespace Gamefication.Storages
@@ -8,6 +7,6 @@ namespace Gamefication.Storages
     {
         [NotNull]
         [ItemNotNull]
-        Event[] GetEvents(Guid? inclusiveStartEventId, int batchSize = 1000);
+        SqlEvent[] GetEvents(long exclusiveStartEventId, int batchSize = 1000);
     }
 }
