@@ -1,29 +1,39 @@
 import React from 'react';
-import {BrowserRouter as Router, Route, Link} from "react-router-dom";
+import {Redirect, Route} from "react-router-dom";
+import {connect} from 'react-redux';
 import './App.css';
-import SignIn from "./pages/SignIn";
-import MainMenu from './components/MainMenu'
+import SignIn from "./containers/SignIn";
+import Main from './containers/Main';
+import {ConnectedRouter} from 'connected-react-router'
+import About from "./components/About";
 
-function App() {
+function App(props) {
+    const {history, isLoggedIn} = props;
     return (
-        <Router>
+        <ConnectedRouter history={history}>
             <div className="App">
-                <header className="App-header">
-                    {/*<img src={logo} className="App-logo" alt="logo"/>*/}
-                    <h1 className="App-title">GarbageCollector</h1>
-                    <MainMenu/>
-                </header>
                 <div>
-                    {/*<Route exact path="/" component={Home}/>*/}
+                    <Route exact path="/" render={() => {
+                        if (isLoggedIn) {
+                            return <Redirect to="/app"/>;
+                        } else {
+                            return <Redirect to="/login"/>;
+                        }
+                    }}/>
+                    <Route exact path="/app" component={Main}/>
+                    <Route exact path="/app/about" component={About}/>
                     <Route exact path="/login" component={SignIn}/>
-                    {/*<Route exact path="/about" component={About}/>*/}
-                    {/*<Route exact path="/code" component={Code}/>*/}
-                    {/*<Route exact path="/contact" component={Contact}/>*/}
-                    {/*<Route exact path="/presence" component={info}/>*/}
                 </div>
             </div>
-        </Router>
+        </ConnectedRouter>
     );
 }
 
-export default App;
+const mapStateToProps = (state /*, ownProps*/) => {
+    const {main} = state;
+    return {
+        isLoggedIn: main.isLoggedIn
+    }
+};
+
+export default connect(mapStateToProps)(App);

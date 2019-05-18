@@ -1,6 +1,8 @@
 version: "2"
 services:
+
   core:
     build:
       context: gc_core
-      dockerfile: docker/
+      dockerfile: ../docker/core/Dockerfile
+    network_mode: host
