@@ -8,8 +8,7 @@ from . import goodObject
 bp_claim = Blueprint("claims", __name__)
 
 add_args = {
-    "garbage_type": fields.Str(required=True),
-    "parameters": fields.Str(required=True),
+    "garbage_type": fields.Str(required=True)
 }
 
 search_args = {
@@ -25,6 +24,20 @@ put_args = {
 @bp_claim.route('/<collector_id>/<citizen_id>', methods=["POST"])
 @use_args(add_args)
 def add(args, collector_id, citizen_id):
+    with goodObject.connection.cursor() as cursor:
+        cursor.execute("insert into claims (create_time, state, creator, executor) values (now(), 0, %s, %s);",
+                       (citizen_id, collector_id))
+        cursor.execute('SELECT LAST_INSERT_ID() as id FROM claims')
+        claim_id = cursor.fetchone()['id']
+
+        cursor.execute('select name from garbage_types where code = %s',
+                       (args['garbage_type']))
+        args['garbage_type'] = cursor.fetchone()['name']
+
+        for key, value in args.items():
+            cursor.execute('insert into claim_params (claim, code, value) values (%s, %s, %s);',
+                           (claim_id, key, value))
+
     return jsonify([collector_id, citizen_id, args])
 
 

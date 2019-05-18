@@ -19,7 +19,8 @@ class GoodObject:
         }
         self.connection = connection = pymysql.connect(
             **self.config['mysql'],
-            cursorclass=pymysql.cursors.DictCursor
+            cursorclass=pymysql.cursors.DictCursor,
+            autocommit=True
         )
 
 
