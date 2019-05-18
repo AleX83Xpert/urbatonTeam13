@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify
 from webargs import fields
 from webargs.flaskparser import use_args
 
-from . import goodObject
+from gc_core.utils import get_conn
 
 
 bp_claim = Blueprint("claims", __name__)
@@ -23,8 +23,10 @@ put_args = {
 
 @bp_claim.route('/<collector_id>/<citizen_id>', methods=["POST"])
 @use_args(add_args)
+
 def add(args, collector_id, citizen_id):
-    with goodObject.connection.cursor() as cursor:
+    conn = get_conn()
+    with conn.cursor() as cursor:
         cursor.execute("insert into claims (create_time, state, creator, executor) values (now(), 0, %s, %s);",
                        (citizen_id, collector_id))
         cursor.execute('SELECT LAST_INSERT_ID() as id FROM claims')
@@ -44,7 +46,8 @@ def add(args, collector_id, citizen_id):
 @bp_claim.route('/search', methods=["GET"])
 @use_args(search_args)
 def search(args):
-    with goodObject.connection.cursor() as cursor:
+    conn = get_conn()
+    with conn.cursor() as cursor:
         if args['collectorsId']:
             cursor.execute('select * from claims where executor = %n', (args['collectorsId']))
         elif args['citizensId']:
@@ -58,7 +61,8 @@ def search(args):
 
 @bp_claim.route('/<id>', methods=["GET"])
 def get(id):
-    with goodObject.connection.cursor() as cursor:
+    conn = get_conn()
+    with conn.cursor() as cursor:
         cursor.execute('select * from claims where id = %n', (id))
         result = cursor.fetchone()
         result['params'] = {}

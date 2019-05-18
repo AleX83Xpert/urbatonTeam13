@@ -4,8 +4,7 @@ from flask import Blueprint, jsonify, abort
 from webargs import fields
 from webargs.flaskparser import use_args
 
-from gc_core.utils import create_session
-from gc_core.blueprints import goodObject
+from gc_core.utils import create_session, get_conn
 
 
 bp_login = Blueprint("login", __name__)
@@ -17,7 +16,8 @@ bp_login = Blueprint("login", __name__)
     "password": fields.Str(required=True)
 })
 def login(args):
-    with goodObject.connection.cursor() as cursor:
+    conn = get_conn()
+    with conn.cursor() as cursor:
         cursor.execute(
             'select id, `type` from users where login = %s and password = %s;',
             (

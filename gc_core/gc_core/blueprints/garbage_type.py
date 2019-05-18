@@ -2,8 +2,8 @@ from flask import Blueprint, jsonify
 from webargs import fields
 from webargs.flaskparser import use_args
 
-from . import goodObject
-import pymysql.cursors
+from gc_core.utils import get_conn
+
 
 bp_garbage = Blueprint("garbages", __name__)
 
@@ -15,7 +15,8 @@ def search():
 
 def finall():
     request = "SELECT * FROM `garbage_types`"
-    with goodObject.connection.cursor() as cursor:
+    conn = get_conn()
+    with conn.cursor() as cursor:
         cursor.execute(request)
         result = cursor.fetchall()
         return result

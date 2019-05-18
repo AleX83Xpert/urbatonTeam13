@@ -1,12 +1,24 @@
 import logging
+import pymysql
 import datetime
+import configparser
+
 from functools import wraps
-from flask import Flask, session, abort
+from flask import Flask, session, abort, g
 from flask_session import Session
 
 from gc_core.env import env
 
 logger = logging.getLogger(__name__)
+
+config = {
+    'mysql': {
+        'host': 'hacathon.liinda.ru',
+        'user': 'ubuntu',
+        'password': 'qwertyasdfgh',
+        'db': 'garbage_collector'
+    }
+}
 
 
 def sessionify(app: Flask):
@@ -15,6 +27,7 @@ def sessionify(app: Flask):
         app.config["SESSION_TYPE"] = "redis"
         Session(app)
     else:
+        app.config["SESSION_TYPE"] = "filesystem"
         Session(app)
 
 
@@ -39,13 +52,34 @@ def check_auth(*roles):
     return wrapper
 
 
+for_auth = check_auth("citizen", "collector", "admin")
 for_citizen = check_auth("citizen", "admin")
 for_collector = check_auth("collector", "admin")
 for_admin = check_auth("admin")
 
 
 def create_session(username, role):
-    session.clear()
+    if 'username' in session:
+        session.clear()
     session["username"] = username
     session["role"] = role
     session["expire"] = datetime.datetime.now() + env.expire_delta
+
+
+def get_conn():
+    if hasattr(g, 'connection'):
+        return g.connection
+
+    g.connection = pymysql.connect(
+        **config['mysql'],
+        cursorclass=pymysql.cursors.DictCursor,
+        autocommit=True
+    )
+
+    return g.connection
+
+
+def close_conn(*_):
+    if hasattr(g, 'connection'):
+        g.connection.close()
+        del g.connection

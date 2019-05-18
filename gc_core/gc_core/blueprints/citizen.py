@@ -2,8 +2,8 @@ from flask import Blueprint, jsonify
 from webargs import fields
 from webargs.flaskparser import use_args
 
-from . import goodObject
-import pymysql.cursors
+from gc_core.utils import get_conn
+
 
 bp_citizen = Blueprint("citizens", __name__)
 
@@ -20,7 +20,8 @@ def search(args):
 
 def search_by(login):
     request = "SELECT `id`, `login` FROM `users` WHERE `type`='citizen' AND `login` LIKE %s"
-    with goodObject.connection.cursor() as cursor:
+    conn = get_conn()
+    with conn.cursor() as cursor:
         cursor.execute(request, ('%' + login + '%'))
         result = cursor.fetchall()
         return result
