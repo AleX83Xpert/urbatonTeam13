@@ -3,9 +3,7 @@ FROM python:3
 WORKDIR /app
 
 COPY ./requirements.txt ./
-COPY ./Makefile ./
-
-RUN make venv
+RUN pip install -r requirements.txt
 
 COPY ./gc_core ./gc_core
 COPY ./entry.py ./entry.py
