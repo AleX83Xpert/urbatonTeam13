@@ -16,7 +16,7 @@ search_args = {
 
 put_args = {
     "measurementUnit": fields.Str(required=True),
-    "amount": fields.Decimal(required=True)
+    "amount": fields.Float(required=True)
 }
 
 
@@ -46,3 +46,4 @@ def delete(id):
 @use_args(put_args)
 def put(args, id, state):
     return jsonify([id, args, state])
+
