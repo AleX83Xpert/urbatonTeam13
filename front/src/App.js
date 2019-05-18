@@ -5,6 +5,7 @@ import './App.css';
 import SignIn from "./containers/SignIn";
 import Main from './containers/Main';
 import {ConnectedRouter} from 'connected-react-router'
+import About from "./components/About";
 
 function App(props) {
     const {history, isLoggedIn} = props;
@@ -20,6 +21,7 @@ function App(props) {
                         }
                     }}/>
                     <Route exact path="/app" component={Main}/>
+                    <Route exact path="/app/about" component={About}/>
                     <Route exact path="/login" component={SignIn}/>
                 </div>
             </div>

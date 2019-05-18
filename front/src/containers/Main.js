@@ -17,9 +17,11 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import {withStyles} from '@material-ui/core/styles';
-import {Redirect} from "react-router-dom";
+import {Redirect, Route, Switch} from "react-router-dom";
 import {connect} from 'react-redux';
 import {userLogout} from "../redux/actions";
+import Citizen from "../components/Citizen";
+import Collector from "../components/Collector";
 
 const drawerWidth = 240;
 
@@ -69,7 +71,7 @@ class App extends Component {
     };
 
     render() {
-        const {classes, theme, isLoggedIn, userLogout, userId, userRole} = this.props;
+        const {classes, theme, isLoggedIn, userLogout, userId, userRole, match} = this.props;
 
         if (!isLoggedIn) {
             return <Redirect to="/login"/>;
@@ -88,7 +90,7 @@ class App extends Component {
                             <ListItemText primary="Главная"/>
                         </ListItem>
                     </Link>
-                    <Link to="/about">
+                    <Link to="/app/about">
                         <ListItem button key="about">
                             <ListItemIcon>{1 % 2 === 0 ? <InboxIcon/> : <MailIcon/>}</ListItemIcon>
                             <ListItemText primary="O..."/>
@@ -155,7 +157,10 @@ class App extends Component {
                 </nav>
                 <main className={classes.content}>
                     <div className={classes.toolbar}/>
-                    Тут всякий контент
+                    {
+                        userRole === 'citizen' ? (<Citizen/>) : (<Collector/>)
+                    }
+
                 </main>
             </div>
         );

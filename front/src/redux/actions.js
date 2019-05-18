@@ -17,6 +17,6 @@ export const setUserId = id => ({
 });
 
 export const setUserRole = role => ({
-    type: ACTION_SET_USER_ID,
+    type: ACTION_SET_USER_ROLE,
     payload: role
 });
