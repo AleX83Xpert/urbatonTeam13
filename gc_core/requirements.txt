@@ -2,3 +2,6 @@ flask
 webargs
 pymysql
 configparser
+Flask-Session
+environs
+redis
