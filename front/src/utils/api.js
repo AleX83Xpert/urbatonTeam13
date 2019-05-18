@@ -58,7 +58,7 @@ export const apiAcceptGarbage = (collectorId, citizenId, garbageType, weight, cb
         });
 };
 
-export const getCitizens = (search, cb) => {
+export const apiGetCitizens = (search, cb) => {
     const url = `${apiUrl}/citizens/search?login=${search}`;
     console.log(url);
     cb([
@@ -75,7 +75,7 @@ export const getCitizens = (search, cb) => {
         });
 };
 
-export const getCollectors = (garbageType, cb) => {
+export const apiGetCollectors = (garbageType, cb) => {
     const url = `${apiUrl}/collectors/search?garbageType=${garbageType}`;
     console.log(url);
     cb([
