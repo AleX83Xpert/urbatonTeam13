@@ -1,4 +1,5 @@
 import json
+import logging
 
 from flask import Blueprint, jsonify, session
 from webargs import fields
@@ -10,6 +11,8 @@ import time
 
 
 bp_claim = Blueprint("claims", __name__)
+
+logger = logging.getLogger(__name__)
 
 
 @bp_claim.route('/<collector_id>/<citizen_id>', methods=["POST"])
@@ -86,6 +89,8 @@ def get(id):
         if not result:
             return jsonify(None)
 
+        result['create_time'] = result['create_time'].strftime('%Y-%m-%d %H:%M:%S')
+
         result['params'] = {}
         cursor.execute('select * from claim_params where claim = %s', (id))
         res = cursor.fetchall()
@@ -131,9 +136,8 @@ def put(args, id, state):
         citizenId = result['creator']
         collectorId = result['executor']
         timestampTicks = int(time.time() * 10000000)
+        logger.info("RESULT: %r" % result)
         if state == "done":
-            if args.get("amount", None) is None or args.get("measurementUnit", None) is None:
-                raise RuntimeError("Claim state 'done' but amount not found")
             lotJson = json.dumps({
                 "LotType": result['params']['garbage_type'],
                 "Quantity": {
@@ -141,15 +145,18 @@ def put(args, id, state):
                     "Value": args["amount"]
                 }
             })
+            logger.info("JSON: %r" % lotJson)
             cursor.execute(
                 'insert into events (CitizenId, CollectorId, TimestampTicks, LotJson) values (%s, %s, %s, %s);',
-                (citizenId, collectorId, timestampTicks,lotJson)
+                (citizenId, collectorId, timestampTicks, lotJson)
             )
-
+            logger.info("INSERT EVENTS: %r" % args)
             for key, value in args.items():  
                 cursor.execute('insert ignore into claim_params (claim, code, value) values (%s, %s, %s);',
                                (id, key, value))
-        cursor.execute('update claims set state = "%s" where id = %s', (state, id))
+
+        logger.info("END METHOD: %s" % state)
+        cursor.execute('update claims set state = %s where id = %s', (state, id))
 
 
 
