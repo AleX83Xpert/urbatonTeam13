@@ -17,7 +17,7 @@ import TextField from '@material-ui/core/TextField';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
-import {apiGetClaims, apiAcceptGarbage, apiGetGarbageTypes, apiGetCitizens} from "../utils/api";
+import {apiGetClaims, apiAcceptGarbage, apiGetGarbageTypes, apiGetCitizens, apiEditClaim} from "../utils/api";
 
 const styles = theme => ({
     root: {
@@ -60,7 +60,7 @@ class Collector extends Component {
     componentDidMount() {
         const {userId} = this.props;
         apiGetClaims(userId, claims => {
-            this.setState({claims});
+            this.setState({claims: claims});
         });
         apiGetCitizens('', citizens => {
             this.setState({citizens: citizens});
@@ -76,10 +76,11 @@ class Collector extends Component {
             currentClaim: filteredClaims.length === 1 ? filteredClaims[0] : null
         }, () => {
             const {currentClaim} = this.state;
+            console.log('current claim', currentClaim);
             this.setState({
                 acceptGarbageData: {
-                    citizenId: currentClaim.citizenId,
-                    garbageType: currentClaim.garbageType
+                    citizenId: currentClaim.creator,
+                    garbageType: currentClaim.params.garbage_type
                 }
             });
         });
@@ -95,7 +96,7 @@ class Collector extends Component {
     };
 
     garbageClickHandler = id => {
-        const filteredGarbageTypes = this.state.garbageTypes.filter(type => type.id === id);
+        const filteredGarbageTypes = this.state.garbageTypes.filter(type => type.code === id);
         this.setState({
             currentGarbageType: filteredGarbageTypes.length === 1 ? filteredGarbageTypes[0] : null
         }, () => {
@@ -127,11 +128,22 @@ class Collector extends Component {
     };
 
     acceptGarbage = () => {
-        const {weight, acceptGarbageData} = this.state;
+        // if currentClaim!==null - it existing claim
+        const {weight, acceptGarbageData, currentClaim} = this.state;
         const {userId} = this.props;
-        if (this.isClaimReadyToAccept()) {
+        if (currentClaim) {
+            alert(`edit claimid=${currentClaim.id}`);
+            apiEditClaim(currentClaim.id, 'done', 'кг', weight, data => {
+                console.log('claim updated', data);
+            });
+        } else if (this.isClaimReadyToAccept()) {
             alert(`accept ${weight}kg of ${acceptGarbageData.garbageType}`);
-            apiAcceptGarbage(userId, acceptGarbageData.citizenId, acceptGarbageData.garbageType, weight, () => {
+            apiAcceptGarbage(userId, acceptGarbageData.citizenId, acceptGarbageData.garbageType, weight, data => {
+                console.log('claim created', data);
+                //сразу закрываем заявку
+                apiEditClaim(data.id, 'done', 'кг', weight, data => {
+                    console.log('claim updated after creating', data);
+                });
                 this.setState({
                     currentClaim: null,
                     weight: 0,
@@ -142,7 +154,7 @@ class Collector extends Component {
     };
 
     render() {
-        const {classes, fullScreen} = this.props;
+        const {classes, fullScreen, currentClaim} = this.props;
         const {
             claims, weight,
             newClaimMode, garbageTypeMode,
@@ -171,13 +183,13 @@ class Collector extends Component {
                                         src="https://material-ui.com/static/images/avatar/1.jpg"/>
                             </ListItemAvatar>
                             <ListItemText
-                                primary={`${claim.citizenLogin}, ${claim.garbageType}`}
+                                primary={`${claim.id}: ${claim.citizen}, ${claim.params.garbage_type}`}
                                 secondary={
                                     <React.Fragment>
                                         <Typography component="span" className={classes.inline} color="textPrimary">
-                                            {claim.createdDttm.toLocaleString()}
+                                            {claim.create_time.toLocaleString()}
                                         </Typography>
-                                        {claim.address}
+                                        {claim.params.address}
                                     </React.Fragment>
                                 }
                             />
@@ -302,14 +314,14 @@ class Collector extends Component {
                         />
                         {garbageTypeSearch && garbageTypeSearch !== '' && <List component="nav">
                             {
-                                garbageTypes.filter(type => type.title.toLowerCase().indexOf(garbageTypeSearch.toLowerCase()) >= 0).map(type => {
+                                garbageTypes.filter(type => type.name.toLowerCase().indexOf(garbageTypeSearch.toLowerCase()) >= 0).map(type => {
                                     return (
-                                        <ListItem key={`claim${type.id}`} alignItems="flex-start" button
+                                        <ListItem key={`claim${type.code}`} alignItems="flex-start" button
                                                   onClick={() => {
-                                                      this.garbageClickHandler(type.id);
+                                                      this.garbageClickHandler(type.code);
                                                   }}>
                                             <ListItemText
-                                                primary={`${type.title}`}
+                                                primary={`${type.name}`}
                                                 secondary=""
                                             />
                                         </ListItem>
@@ -337,7 +349,7 @@ class Collector extends Component {
                                 garbageTypeMode: false,
                                 acceptGarbageData: {
                                     ...acceptGarbageData,
-                                    garbageType: currentGarbageType.id,
+                                    garbageType: currentGarbageType.code,
                                 }
                             });
                         }} color="primary" disabled={currentGarbageType === null}>
