@@ -30,7 +30,7 @@ const styles = theme => ({
     },
     fab: {
         // margin: theme.spacing.unit,
-        position: 'absolute',
+        position: 'fixed',
         bottom: theme.spacing.unit * 2,
         right: theme.spacing.unit * 2,
         zIndex: 1
@@ -132,12 +132,17 @@ class Collector extends Component {
         const {weight, acceptGarbageData, currentClaim} = this.state;
         const {userId} = this.props;
         if (currentClaim) {
-            alert(`edit claimid=${currentClaim.id}`);
+            // alert(`edit claimid=${currentClaim.id}`);
             apiEditClaim(currentClaim.id, 'done', 'кг', weight, data => {
                 console.log('claim updated', data);
+                this.setState({
+                    currentClaim: null,
+                    weight: 0,
+                    acceptGarbageData: {}
+                });
             });
         } else if (this.isClaimReadyToAccept()) {
-            alert(`accept ${weight}kg of ${acceptGarbageData.garbageType}`);
+            // alert(`accept ${weight}kg of ${acceptGarbageData.garbageType}`);
             apiAcceptGarbage(userId, acceptGarbageData.citizenId, acceptGarbageData.garbageType, weight, data => {
                 console.log('claim created', data);
                 //сразу закрываем заявку
@@ -165,7 +170,7 @@ class Collector extends Component {
         } = this.state;
         return (
             <div>
-                <h1>Заявки</h1>
+                <h3>Заявки на прием</h3>
                 <Fab color="primary" aria-label="Add" className={classes.fab} onClick={() => {
                     this.setState({
                         newClaimMode: true
@@ -174,21 +179,22 @@ class Collector extends Component {
                     <AddIcon/>
                 </Fab>
                 <List component="nav">
-                    {claims.map(claim => (
+                    {claims.map((claim, index) => (
                         <ListItem key={`claim${claim.id}`} alignItems="flex-start" button onClick={() => {
                             this.claimClickHandler(claim.id)
                         }}>
                             <ListItemAvatar>
                                 <Avatar alt={claim.citizenLogin}
-                                        src="https://material-ui.com/static/images/avatar/1.jpg"/>
+                                        src={`https://material-ui.com/static/images/avatar/${index % 7 + 1}.jpg`}/>
                             </ListItemAvatar>
                             <ListItemText
-                                primary={`${claim.id}: ${claim.citizen}, ${claim.params.garbage_type}`}
+                                primary={`${claim.citizen}, ${claim.params.garbage_type}`}
                                 secondary={
                                     <React.Fragment>
                                         <Typography component="span" className={classes.inline} color="textPrimary">
                                             {claim.create_time.toLocaleString()}
                                         </Typography>
+                                        <br/>
                                         {claim.params.address}
                                     </React.Fragment>
                                 }

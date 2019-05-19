@@ -6,19 +6,21 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import configureStore, {history} from './redux/store';
 
+const userId = localStorage.getItem('userId');
+const userRole = localStorage.getItem('userRole');
 const store = configureStore({
     main: {
-        isLoggedIn: false,
-        userId: null,
-        userRole: null
+        isLoggedIn: !!userId && !!userRole,
+        userId: userId,
+        userRole: userRole
     }
 });
 
 ReactDOM.render(
     <Provider store={store}>
         <App history={history}/>
-    </Provider>
-    , document.getElementById('root')
+    </Provider>,
+    document.getElementById('root')
 );
 
 // If you want your app to work offline and load faster, you can change
