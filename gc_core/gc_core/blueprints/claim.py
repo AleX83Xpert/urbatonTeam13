@@ -42,11 +42,21 @@ def search(args):
     conn = get_conn()
     with conn.cursor() as cursor:
         if 'collectorsId' in args:
-            cursor.execute('select c.*, u.login from claims c inner join users u on u.id = c.executor where c.executor = %s',
-                           (args['collectorsId']))
+            cursor.execute(
+                """select c.*, u.login as citizen, u2.login as collector
+                    from claims c 
+                        inner join users u on u.id = c.creator
+                        inner join users u2 on u.id = c.executor
+                    where c.executor = %s""",
+                (args['collectorsId']))
         elif 'citizensId' in args:
-            cursor.execute('select c.*, u.login from claims c inner join users u on u.id = c.creator where c.creator = %s',
-                           (args['citizensId']))
+            cursor.execute(
+                """select c.*, u.login as collector, u2.login as citizen
+                    from claims c 
+                        inner join users u on u.id = c.executor 
+                        inner join users u2 on u.id = c.creator 
+                    where c.creator = %s""",
+                (args['citizensId']))
         else:
             return jsonify(None)
         result = cursor.fetchall()
