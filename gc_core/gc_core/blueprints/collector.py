@@ -21,6 +21,13 @@ def search(args):
         cursor.execute(request, params)
         collectors = cursor.fetchall()
 
+        for raw in collectors:
+            cursor.execute('select * from user_params where `user` = %s', raw['user'])
+            raw['params'] = {}
+            result = cursor.fetchall()
+            for row in result:
+                raw['params'][row['code']] = row['value']
+
     return jsonify(collectors)
 
 
@@ -33,6 +40,9 @@ def request_build(garbage_type=_sentinel):
                         delivery_points.id = delivery_point_garbage_types.`point`
                     JOIN garbage_types ON 
                         garbage_types.code = delivery_point_garbage_types.`type`
+                    LEFT JOIN user_params ON
+                        user_params.`user` = `users`.id AND
+                        user_params.code = 'on_export'
                  WHERE `users`.type='collector'"""
     if garbage_type != _sentinel:
         params.append(garbage_type)
