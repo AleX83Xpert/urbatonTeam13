@@ -1,5 +1,6 @@
 import logging
 from flask import Flask
+from flask_cors import CORS
 
 from gc_core.mount import mount
 from gc_core.utils import sessionify, close_conn
@@ -12,7 +13,8 @@ def factory():
     app.config['SECRET_KEY'] = 'dfijhwrtyw45ihjs8o5ha'
     mount(app)
     sessionify(app)
-    app.after_request(with_headers)
+    CORS(app)
+    # app.after_request(with_headers)
     return app
 
 
@@ -20,6 +22,6 @@ def setup_logging():
     logging.basicConfig(level=logging.INFO)
 
 
-def with_headers(response):
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    return response
+# def with_headers(response):
+#     response.headers['Access-Control-Allow-Origin'] = '*'
+#     return response
