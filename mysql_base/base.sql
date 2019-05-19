@@ -51,7 +51,7 @@ create table garbage_collector.delivery_points (
 	id bigint NOT NULL AUTO_INCREMENT,
 	coord_x int,
 	coord_y int,
-	adress text,
+	address text,
 	`user` bigint,
 	PRIMARY KEY (id),
 	FOREIGN KEY (`user`) REFERENCES users (id)

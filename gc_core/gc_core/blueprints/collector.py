@@ -51,14 +51,14 @@ def add(args):
 
 @bp_collector.route('/<id>/deliveryPoint', methods=["PUT"])
 @use_args({
-    "adress": fields.List(fields.Str()),
+    "address": fields.List(fields.Str()),
     "x": fields.Int(required=True),
     "y": fields.Int(required=True),
     "garbageTypes": fields.List(fields.Str(), required=True)
 })
 def add_delivery_point(args, id):
     request = "INSERT INTO garbage_collector.`delivery_points` VALUES (null, %s, %s, %s, %s)"
-    execute_one(request, (args["x"], args["y"], args["adress"], id))
+    execute_one(request, (args["x"], args["y"], args["address"], id))
     delivery_point_id = get_last_id("`delivery_points`")
     
     gt_request = "INSERT INTO garbage_collector.delivery_point_garbage_types VALUES (null, %s, %s)"
