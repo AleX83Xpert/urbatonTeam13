@@ -49,8 +49,8 @@ CREATE TABLE garbage_collector.claim_params(
 
 create table garbage_collector.delivery_points (
 	id bigint NOT NULL AUTO_INCREMENT,
-	coord_x int,
-	coord_y int,
+	coord_x float,
+	coord_y float,
 	address text,
 	`user` bigint,
 	PRIMARY KEY (id),
