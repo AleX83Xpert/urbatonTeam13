@@ -5,7 +5,7 @@ from webargs import fields
 from webargs.flaskparser import use_args
 
 from gc_core.utils import get_conn, _sentinel
-from gc_core.utils import execute_all, execute_one, get_last_id
+from gc_core.utils import execute_all, execute_one, get_last_id, execute
 
 bp_collector = Blueprint("collectors", __name__)
 
@@ -41,12 +41,17 @@ def search(args):
 @bp_collector.route('/', methods=["POST"])
 @use_args({
     "login": fields.Str(required=True),
-    "password": fields.Str(required=True)
+    "password": fields.Str(required=True),
+    "on_export": fields.Integer(required=True),
+    "name": fields.Str(required=False)
 })
 def add(args):
-    request = "INSERT INTO garbage_collector.`users` VALUES (null, %s, %s, now(), 'collector')"
-    execute_one(request, (args["login"], args["password"]))
+    request = "INSERT INTO garbage_collector.`users` VALUES (null, %s, md5(%s), now(), 'collector')"
+    execute(request, (args.pop("login"), args.pop("password")))
     id = get_last_id("`users`")
+    for key, values in args.items():
+        execute("INSERT INTO garbage_collector.user_params (`user`, `code`, `value`) values (%s, %s, %s)",
+                (id, key, values))
     return jsonify({"id": id})
 
 @bp_collector.route('/<id>/deliveryPoint', methods=["PUT"])

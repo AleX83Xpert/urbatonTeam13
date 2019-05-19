@@ -81,6 +81,11 @@ def close_conn(*_):
 
 _sentinel = object()
 
+def execute(request, args = ()):
+    conn = get_conn()
+    with conn.cursor() as cursor:
+        cursor.execute(request, args)
+
 def execute_all(request, args = ()):
     conn = get_conn()
     with conn.cursor() as cursor:
