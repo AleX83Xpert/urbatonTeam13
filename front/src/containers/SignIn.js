@@ -56,6 +56,7 @@ class SignIn extends Component {
         super(props);
         this.state = {
             isLoggingIn: false,
+            toReg: false,
             login: '',
             password: ''
         };
@@ -74,6 +75,12 @@ class SignIn extends Component {
         });
     };
 
+    goReg = e => {
+        this.setState({
+            toReg: true
+        });
+    };
+
     loginHandler = e => {
         this.setState({
             login: e.target.value
@@ -88,8 +95,11 @@ class SignIn extends Component {
 
     render() {
         const {classes, isLoggedIn} = this.props;
-        const {login, password} = this.state;
+        const {toReg, login, password} = this.state;
 
+        if (toReg) {
+            return <Redirect to="/signup"/>;
+        }
         if (isLoggedIn) {
             return <Redirect to="/"/>;
         }
@@ -127,6 +137,15 @@ class SignIn extends Component {
                             className={classes.submit}
                         >
                             Войти
+                        </Button>
+                        <Button
+                            type="button"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            onClick={this.goReg}
+                        >
+                            Зарегистрироваться
                         </Button>
                     </form>
                 </Paper>
