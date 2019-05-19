@@ -41,9 +41,9 @@ def add(args, collector_id, citizen_id):
 def search(args):
     conn = get_conn()
     with conn.cursor() as cursor:
-        if 'collectorsId' in args and session['role'] == 'citizen':
+        if 'collectorsId' in args:
             cursor.execute('select * from claims where executor = %s', (args['collectorsId']))
-        elif 'citizensId' in args and session['role'] == 'collector':
+        elif 'citizensId' in args:
             cursor.execute('select * from claims where creator = %s', (args['citizensId']))
         else:
             return jsonify(None)
