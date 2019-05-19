@@ -36,10 +36,6 @@ def add(args, collector_id, citizen_id):
         cursor.execute('SELECT LAST_INSERT_ID() as id FROM claims')
         claim_id = cursor.fetchone()['id']
 
-        cursor.execute('select name from garbage_types where code = %s',
-                       (args['garbage_type']))
-        args['garbage_type'] = cursor.fetchone()['name']
-
         for key, value in args.items():
             cursor.execute('insert into claim_params (claim, code, value) values (%s, %s, %s);',
                            (claim_id, key, value))
@@ -82,6 +78,11 @@ def get(id):
         for raw in res:
             result['params'][raw['code']] = raw['value']
 
+        if 'garbage_type' in result['params']:
+            cursor.execute('select name from garbage_types where code = %s',
+                           (result['params']['garbage_type']))
+            result['params']['garbage_type'] = cursor.fetchone()['name']
+
     return jsonify(result)
 
 
@@ -116,19 +117,23 @@ def put(args, id, state):
         collectorId = result['executor']
         timestampTicks = int(time.time() * 10000000)
         if state == "done":
-            if args.get("amount", None) == None:
+            if args.get("amount", None) is None or args.get("measurementUnit", None) is None:
                 raise RuntimeError("Claim state 'done' but amount not found")
             lotJson = jsonify({
-                "LotType": result['params']['type'],
+                "LotType": result['params']['garbage_type'],
                 "Quantity": {
                     "MeasurementUnit": args["measurementUnit"],
                     "Value": args["amount"]
                 }
             })
-            cursor.execute('insert into events (CitizenId, CollectorId, TimestampTicks, LotJson) values (%s, %s, %s, %s);', (citizenId, collectorId, timestampTicks,lotJson))    
+            cursor.execute(
+                'insert into events (CitizenId, CollectorId, TimestampTicks, LotJson) values (%s, %s, %s, %s);',
+                (citizenId, collectorId, timestampTicks,lotJson)
+            )
 
             for key, value in args.items():  
-                cursor.execute('insert ignore into claim_params (claim, code, value) values (%s, %s, %s);', (id, key, value))
+                cursor.execute('insert ignore into claim_params (claim, code, value) values (%s, %s, %s);',
+                               (id, key, value))
         cursor.execute('update claims set state = "%s" where id = %s', (state, id))
 
 
