@@ -1,3 +1,5 @@
+import functools
+
 from flask import Blueprint, jsonify
 from webargs import fields
 from webargs.flaskparser import use_args
@@ -21,10 +23,15 @@ def search(args):
         cursor.execute(request, params)
         collectors = cursor.fetchall()
 
+        @functools.lru_cache()
+        def get_params(user):
+            cursor.execute('select * from user_params where `user` = %s', (user))
+
+            return cursor.fetchall()
+
         for raw in collectors:
-            cursor.execute('select * from user_params where `user` = %s', raw['user'])
             raw['params'] = {}
-            result = cursor.fetchall()
+            result = get_params(raw['user'])
             for row in result:
                 raw['params'][row['code']] = row['value']
 
