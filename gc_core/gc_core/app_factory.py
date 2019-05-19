@@ -22,3 +22,4 @@ def setup_logging():
 
 def with_headers(response):
     response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
