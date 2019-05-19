@@ -225,7 +225,8 @@ class Collector extends Component {
                     <DialogActions>
                         <Button onClick={() => {
                             this.setState({
-                                currentClaim: null
+                                currentClaim: null,
+                                acceptGarbageData: {}
                             });
                         }} color="primary">
                             Отмена
@@ -245,7 +246,6 @@ class Collector extends Component {
                     <DialogTitle id="responsive-dialog-title">{"Новая заявка"}</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
-                            йцукенг
                         </DialogContentText>
                         <TextField
                             label="Логин гражданина"
@@ -313,7 +313,7 @@ class Collector extends Component {
                         <DialogContentText>
                         </DialogContentText>
                         <TextField
-                            label="Тип мусора"
+                            label="Тип мусора (стекло, пластик, одежда,...)"
                             onChange={this.garbageTypeChangeHandler}
                             autoFocus
                             value={garbageTypeSearch}
