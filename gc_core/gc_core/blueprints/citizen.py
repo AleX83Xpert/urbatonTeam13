@@ -20,6 +20,16 @@ def search(args):
     
     return jsonify(result)
 
+@bp_citizen.route("/", methods=["GET"])
+@use_args({
+})
+@for_collector
+def get_all(args):
+    request = "SELECT * FROM `users`"
+    result = execute_all(request, ())
+    
+    return jsonify(result)
+
 @bp_citizen.route("/", methods=["POST"])
 @use_args({
     "login": fields.Str(required=True),
