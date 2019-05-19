@@ -70,7 +70,7 @@ class SignIn extends Component {
         // setTimeout(() => {
         userLogin();
         setUserId(1);
-        setUserRole('collector');
+        setUserRole('citizen');
         // }, 2000);
         //alert(`LOGIN: ${login} / ${password}`);
     };

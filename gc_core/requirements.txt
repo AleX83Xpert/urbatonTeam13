@@ -5,3 +5,4 @@ configparser
 Flask-Session
 environs
 redis
+flask-cors
