@@ -58,3 +58,7 @@ Build/MSBuild.TaskWrapper/LogsDirectory
 .babel-cache
 !webpack-dll-assets.json
 !webpack-vendor-assets.json
+
+static
+template
+index.html
