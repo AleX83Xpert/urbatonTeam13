@@ -11,15 +11,8 @@ from gc_core.env import env
 
 logger = logging.getLogger(__name__)
 
-config = {
-    'mysql': {
-        'host': 'hacathon.liinda.ru',
-        'user': 'ubuntu',
-        'password': 'qwertyasdfgh',
-        'db': 'garbage_collector'
-    }
-}
-
+config = configparser.ConfigParser()
+config.read('gc_core/__conf__/production.conf')
 
 def sessionify(app: Flask):
     logger.info("REDIS: %s" % env.with_redis)
@@ -35,19 +28,19 @@ def check_auth(*roles):
     def wrapper(func):
         @wraps(func)
         def wrap(*arg, **kw):
-            logger.info("SESSION: %s" % session)
+            # logger.info("SESSION: %s" % session)
 
             # find session
-            if "username" in session and session["expire"] > datetime.datetime.now():
-                session["expire"] = datetime.datetime.now() + env.expire_delta
-
-                logger.info(roles)
-                if session["role"] not in roles:
-                    abort(403)
+            # if "username" in session and session["expire"] > datetime.datetime.now():
+            #     session["expire"] = datetime.datetime.now() + env.expire_delta
+            #
+            #     logger.info(roles)
+            #     if session["role"] not in roles:
+            #         abort(403)
 
                 return func(*arg, **kw)
-            else:
-                abort(401)
+            # else:
+            #     abort(401)
 
         return wrap
     return wrapper
