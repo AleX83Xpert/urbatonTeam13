@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {userLogout} from "../redux/actions";
+import {apiGetUserPoints} from '../utils/api';
 
 class Stats extends Component {
 
@@ -12,12 +13,13 @@ class Stats extends Component {
     }
 
     componentDidMount() {
-        //эмуляция задержки запроса к серверу
-        setTimeout(() => {
+        apiGetUserPoints(this.props.userId, data =>{
+            console.log(data)
             this.setState({
-                loyalty: 100.0
+                loyalty:data.Loyalty,
             });
-        }, 1000);
+
+          });
     }
 
     render() {

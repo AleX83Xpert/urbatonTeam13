@@ -114,3 +114,16 @@ export const apiGetGarbageTypes = (cb) => {
             console.log(err);
         });
 };
+
+export const apiGetUserPoints = (userId, cb) => {
+    const url = `${apiUrl}/citizens/${userId}/points`;
+    console.log(url);
+    axios.get(url)
+        .then(res => {
+            console.log(res);
+            cb(res.data);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};
