@@ -56,7 +56,7 @@ def delete(id):
 
 @bp_citizen.route("/<id>/points", methods=["GET"])
 def get_points(id):
-    request = "SELECT Loyalty FROM gamefication_state WHERE UserId` = %s"
+    request = "SELECT Loyalty FROM gamefication_state WHERE UserId = %s"
     result = execute_one(request, (id))
     
     return jsonify(result)
