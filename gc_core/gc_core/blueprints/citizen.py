@@ -25,7 +25,6 @@ def search(args):
     "login": fields.Str(required=True),
     "password": fields.Str(required=True)
 })
-@for_collector
 def add(args):
     search_request = "SELECT `id` FROM `users` WHERE `type`='citizen' AND `login` = %s"
     found_users = execute_all(search_request, (args["login"]))
@@ -39,7 +38,6 @@ def add(args):
     return "0k"
 
 @bp_citizen.route("/<id>", methods=["DELETE"])
-@for_collector
 def delete(id):
     request = "DELETE FROM garbage_collector.`users` WHERE id=%s"
     execute_one(request, (id))
