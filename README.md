@@ -1,5 +1,3 @@
 # urbatonTeam13
-Who have some ideas for project on hakaton?
-maybe transport app, but i don't know where takes data for that.
-hfhjf
-etrwet
+Garbage Collection application.
+We collect data about places, where citizens could utilize their things with some proffit or more ecologicaly. This system have some gamefication fetures, now its just first release of our application.
