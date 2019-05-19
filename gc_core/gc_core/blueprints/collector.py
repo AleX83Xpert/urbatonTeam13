@@ -5,7 +5,7 @@ from webargs import fields
 from webargs.flaskparser import use_args
 
 from gc_core.utils import get_conn, _sentinel
-from gc_core.utils import execute_all, execute_one
+from gc_core.utils import execute_all, execute_one, get_last_id
 
 bp_collector = Blueprint("collectors", __name__)
 
@@ -46,8 +46,27 @@ def search(args):
 def add(args):
     request = "INSERT INTO garbage_collector.`users` VALUES (null, %s, %s, now(), 'collector')"
     execute_one(request, (args["login"], args["password"]))
-    id = execute_one("SELECT LAST_INSERT_ID() FROM garbage_collector.`users`", ())
-    return jsonify({"id": id["LAST_INSERT_ID()"]})
+    id = get_last_id("`users`")
+    return jsonify({"id": id})
+
+@bp_collector.route('/<id>/deliveryPoint', methods=["PUT"])
+@use_args({
+    "adress": fields.List(fields.Str()),
+    "x": fields.Int(required=True),
+    "y": fields.Int(required=True),
+    "garbageTypes": fields.List(fields.Str(), required=True)
+})
+def add_delivery_point(args, id):
+    request = "INSERT INTO garbage_collector.`delivery_points` VALUES (null, %s, %s, %s, %s)"
+    execute_one(request, (args["x"], args["y"], args["adress"], id))
+    delivery_point_id = get_last_id("`delivery_points`")
+    
+    gt_request = "INSERT INTO garbage_collector.delivery_point_garbage_types VALUES (null, %s, %s)"
+    for garbage_type in args["garbageTypes"]:
+        id = find_garbage_type(garbage_type)
+        execute_one(gt_request, (id, delivery_point_id))
+    
+    return jsonify({"id": delivery_point_id})
 
 def request_build(garbage_type=_sentinel):
     params = []
@@ -66,3 +85,8 @@ def request_build(garbage_type=_sentinel):
         params.append(garbage_type)
         request += " AND garbage_types.code=%s"
     return tuple(params), request
+
+def find_garbage_type(garbage_type):
+    request = "SELECT code FROM `garbage_types` WHERE code=%s"
+    result = execute_one(request, (garbage_type))
+    return result["code"]
