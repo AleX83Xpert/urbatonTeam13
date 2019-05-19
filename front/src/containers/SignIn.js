@@ -6,16 +6,14 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
-import {AxiosInstance as axios} from "axios";
 import {userLogin, userLogout, setUserId, setUserRole} from "../redux/actions";
+import {apiLogin} from "../utils/api";
 
 const styles = theme => ({
     main: {
@@ -67,12 +65,11 @@ class SignIn extends Component {
         event.preventDefault();
         const {userLogin, setUserId, setUserRole} = this.props;
         const {login, password} = this.state;
-        // setTimeout(() => {
-        userLogin();
-        setUserId(1);
-        setUserRole('citizen');
-        // }, 2000);
-        //alert(`LOGIN: ${login} / ${password}`);
+        apiLogin(login, password, (id, role) => {
+            setUserId(id);
+            setUserRole(role);
+            userLogin();
+        });
     };
 
     loginHandler = e => {

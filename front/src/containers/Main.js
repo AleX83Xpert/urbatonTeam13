@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {Link} from "react-router-dom";
-import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
@@ -17,7 +16,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import {withStyles} from '@material-ui/core/styles';
-import {Redirect, Route, Switch} from "react-router-dom";
+import {Redirect} from "react-router-dom";
 import {connect} from 'react-redux';
 import {userLogout} from "../redux/actions";
 import Citizen from "../components/Citizen";
@@ -71,7 +70,7 @@ class App extends Component {
     };
 
     render() {
-        const {classes, theme, isLoggedIn, userLogout, userId, userRole, match} = this.props;
+        const {classes, theme, isLoggedIn, userLogout, userRole} = this.props;
 
         if (!isLoggedIn) {
             return <Redirect to="/login"/>;
@@ -160,7 +159,16 @@ class App extends Component {
                     {
                         userRole === 'citizen' ? (<Citizen/>) : (<Collector/>)
                     }
-
+                    {/*<Switch>*/}
+                    {/*<Route exact path={`/${match.url}`} render={() => {*/}
+                    {/*if (userRole === 'citizen') {*/}
+                    {/*return <Citizen/>;*/}
+                    {/*} else {*/}
+                    {/*return <Collector/>;*/}
+                    {/*}*/}
+                    {/*}}/>*/}
+                    {/*<Route path={`/${match.url}/about`} component={About}/>*/}
+                    {/*</Switch>*/}
                 </main>
             </div>
         );

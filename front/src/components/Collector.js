@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -45,6 +44,7 @@ class Collector extends Component {
             claims: [],
             currentClaim: null,
             weight: 0,
+            acceptGarbageData: {},//claim data to accept garbage
             newClaimMode: false,
             citizenLoginSearch: '',
             selectedCitizenId: null,
@@ -58,7 +58,8 @@ class Collector extends Component {
     }
 
     componentDidMount() {
-        apiGetClaims(1, claims => {
+        const {userId} = this.props;
+        apiGetClaims(userId, claims => {
             this.setState({claims});
         });
         apiGetCitizens('', citizens => {
@@ -73,6 +74,14 @@ class Collector extends Component {
         const filteredClaims = this.state.claims.filter(claim => claim.id === claimId);
         this.setState({
             currentClaim: filteredClaims.length === 1 ? filteredClaims[0] : null
+        }, () => {
+            const {currentClaim} = this.state;
+            this.setState({
+                acceptGarbageData: {
+                    citizenId: currentClaim.citizenId,
+                    garbageType: currentClaim.garbageType
+                }
+            });
         });
     };
 
@@ -80,6 +89,8 @@ class Collector extends Component {
         const filteredCitizens = this.state.citizens.filter(citizen => citizen.id === id);
         this.setState({
             currentCitizen: filteredCitizens.length === 1 ? filteredCitizens[0] : null
+        }, () => {
+
         });
     };
 
@@ -87,6 +98,8 @@ class Collector extends Component {
         const filteredGarbageTypes = this.state.garbageTypes.filter(type => type.id === id);
         this.setState({
             currentGarbageType: filteredGarbageTypes.length === 1 ? filteredGarbageTypes[0] : null
+        }, () => {
+
         });
     };
 
@@ -108,15 +121,21 @@ class Collector extends Component {
         });
     };
 
+    isClaimReadyToAccept = () => {
+        const {acceptGarbageData} = this.state;
+        return !!(acceptGarbageData && acceptGarbageData.citizenId && acceptGarbageData.garbageType);
+    };
+
     acceptGarbage = () => {
-        const {weight, currentClaim} = this.state;
+        const {weight, acceptGarbageData} = this.state;
         const {userId} = this.props;
-        if (currentClaim) {
-            alert(`accept ${weight}kg of ${currentClaim.garbageType}`);
-            apiAcceptGarbage(userId, currentClaim.citizenId, currentClaim.garbageType, weight, () => {
+        if (this.isClaimReadyToAccept()) {
+            alert(`accept ${weight}kg of ${acceptGarbageData.garbageType}`);
+            apiAcceptGarbage(userId, acceptGarbageData.citizenId, acceptGarbageData.garbageType, weight, () => {
                 this.setState({
                     currentClaim: null,
-                    weight: 0
+                    weight: 0,
+                    acceptGarbageData: {}
                 });
             });
         }
@@ -125,10 +144,10 @@ class Collector extends Component {
     render() {
         const {classes, fullScreen} = this.props;
         const {
-            claims, currentClaim, weight,
+            claims, weight,
             newClaimMode, garbageTypeMode,
             citizenLoginSearch, garbageTypeSearch,
-            selectedCitizenId, citizens,
+            citizens,
             currentCitizen, garbageTypes,
             currentGarbageType
         } = this.state;
@@ -169,7 +188,7 @@ class Collector extends Component {
                 {/* ACCEPT GARBAGE */}
                 <Dialog
                     fullScreen={fullScreen}
-                    open={currentClaim !== null}
+                    open={this.isClaimReadyToAccept()}
                     aria-labelledby="responsive-dialog-title"
                 >
                     <DialogTitle id="responsive-dialog-title">{"Прием"}</DialogTitle>
@@ -243,13 +262,19 @@ class Collector extends Component {
                             this.setState({
                                 newClaimMode: false,
                                 currentCitizen: null,
-                                citizenLoginSearch: ''
+                                citizenLoginSearch: '',
+                                acceptGarbageData: {}
                             });
                         }} color="primary">
                             Отмена
                         </Button>
                         <Button onClick={() => {
+                            const {acceptGarbageData, currentCitizen} = this.state;
                             this.setState({
+                                acceptGarbageData: {
+                                    ...acceptGarbageData,
+                                    citizenId: currentCitizen.id,
+                                },
                                 newClaimMode: false,
                                 garbageTypeMode: true
                             });
@@ -300,13 +325,21 @@ class Collector extends Component {
                                 currentGarbageType: null,
                                 currentCitizen: null,
                                 garbageTypeSearch: '',
-                                citizenLoginSearch: ''
+                                citizenLoginSearch: '',
+                                acceptGarbageData: {}
                             });
                         }} color="primary">
                             Отмена
                         </Button>
                         <Button onClick={() => {
-                            alert('123')
+                            const {acceptGarbageData, currentGarbageType} = this.state;
+                            this.setState({
+                                garbageTypeMode: false,
+                                acceptGarbageData: {
+                                    ...acceptGarbageData,
+                                    garbageType: currentGarbageType.id,
+                                }
+                            });
                         }} color="primary" disabled={currentGarbageType === null}>
                             Далее >
                         </Button>

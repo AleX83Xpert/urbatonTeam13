@@ -6,7 +6,7 @@ all: venv
 	$(ACTIVATE) && python entry.py
 
 venv:
-	virtualenv -ppython3 venv
+	python3 -m venv venv
 	$(ACTIVATE) && pip install -r requirements.txt
 
 

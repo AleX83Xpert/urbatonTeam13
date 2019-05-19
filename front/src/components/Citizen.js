@@ -7,7 +7,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import {apiGetGarbageTypes}from '../utils/api';
-import {getCollectors} from '../utils/api';
+import {apiGetCollectors} from '../utils/api';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
@@ -54,7 +54,7 @@ class Citizen extends Component {
     componentDidMount() {
         //эмуляция задержки запроса к серверу
         apiGetGarbageTypes(types=>{
-          getCollectors(types,data =>{
+          apiGetCollectors(types,data =>{
             this.setState({
               collectors:data,
             });
