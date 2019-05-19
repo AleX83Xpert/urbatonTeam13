@@ -5,6 +5,7 @@ from webargs import fields
 from webargs.flaskparser import use_args
 
 from gc_core.utils import get_conn, _sentinel
+from gc_core.utils import execute_all, execute_one
 
 bp_collector = Blueprint("collectors", __name__)
 
@@ -37,6 +38,16 @@ def search(args):
 
     return jsonify(collectors)
 
+@bp_collector.route('/', methods=["POST"])
+@use_args({
+    "login": fields.Str(required=True),
+    "password": fields.Str(required=True)
+})
+def add(args):
+    request = "INSERT INTO garbage_collector.`users` VALUES (null, %s, %s, now(), 'collector')"
+    execute_one(request, (args["login"], args["password"]))
+    id = execute_one("SELECT LAST_INSERT_ID() FROM garbage_collector.`users`", ())
+    return jsonify({"id": id["LAST_INSERT_ID()"]})
 
 def request_build(garbage_type=_sentinel):
     params = []

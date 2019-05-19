@@ -35,7 +35,8 @@ def add(args):
     request = "INSERT INTO garbage_collector.`users` VALUES (null, %s, %s, now(), 'citizen')"
     citizen_info = (args["login"], passowrd_hash)
     execute_one(request, citizen_info)
-    return "0k"
+    id = execute_one("SELECT LAST_INSERT_ID() FROM garbage_collector.`users`", ())
+    return jsonify({"id": id["LAST_INSERT_ID()"]})
 
 @bp_citizen.route("/<id>", methods=["DELETE"])
 def delete(id):
