@@ -14,4 +14,4 @@ def mount(app: Flask):
     app.register_blueprint(bp_claim, url_prefix="/claims")
     app.register_blueprint(bp_login, url_prefix="/login")
     app.register_blueprint(bp_citizen, url_prefix="/citizens")
-    app.register_blueprint(bp_garbage, url_prefix="/garbage")
+    app.register_blueprint(bp_garbage, url_prefix="/garbages")

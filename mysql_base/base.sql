@@ -77,7 +77,31 @@ create table  garbage_collector.delivery_point_garbage_types (
 	FOREIGN KEY (point) REFERENCES delivery_points (id)
 )DEFAULT CHARACTER SET utf8;
 
+CREATE TABLE garbage_collector.gamefication_state (
+  `Id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `UserId` bigint(20) NOT NULL,
+  `Loyalty` double NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
+
+CREATE TABLE garbage_collector.events (
+  `Id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `CitizenId` bigint(20) NOT NULL,
+  `CollectorId` bigint(20) NOT NULL,
+  `TimestampTicks` bigint(20) NOT NULL,
+  `LotJson` text,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
+
+CREATE TABLE garbage_collector.last_processed_event (
+  `Id` bigint(20) NOT NULL,
+  `EventId` bigint(20) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
+
 insert into garbage_types values ('glass', 'Стекло', 'кг'), ('plastic', 'Пластик', 'кг'), ('metal', 'Метал', 'кг');
 
 insert into garbage_collector.delivery_points values (null, null, null, 'Тестовая улица дом 1', 2), (null, null, null, 'Тестовая улица дом 31', 2);
 insert into delivery_point_garbage_types values (null, 'glass', 1), (null, 'glass', 2), (null, 'plastic', 2);
+
+

@@ -25,6 +25,9 @@ namespace Gamefication
                 {
                     var currentState = gameficationStateStorage.TryGetState(g.Key);
                     foreach (var @event in g) currentState = ProcessEvent(@event, currentState);
+
+                    if (currentState != null)
+                        gameficationStateStorage.UpdateState(currentState);
                 });
         }
 
@@ -34,12 +37,14 @@ namespace Gamefication
             if (state == null)
                 return new SqlGameficationState
                 {
-                    Loyalty = DefaultDelta
+                    Loyalty = DefaultDelta,
+                    UserId = @event.CitizenId,
                 };
 
             return new SqlGameficationState
             {
-                Loyalty = state.Loyalty + DefaultDelta
+                Loyalty = state.Loyalty + DefaultDelta,
+                UserId = state.UserId,
             };
         }
     }

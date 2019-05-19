@@ -26,7 +26,7 @@ namespace Gamefication.Storages
         }
 
         [CanBeNull]
-        public SqlGameficationState TryGetState(ulong userId)
+        public SqlGameficationState TryGetState(long userId)
         {
             using (var db = new ApplicationContext())
             {
