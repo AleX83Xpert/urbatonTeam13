@@ -46,7 +46,7 @@ def search(args):
                 """select c.*, u.login as citizen, u2.login as collector
                     from claims c 
                         inner join users u on u.id = c.creator
-                        inner join users u2 on u.id = c.executor
+                        inner join users u2 on u2.id = c.executor
                     where c.executor = %s""",
                 (args['collectorsId']))
         elif 'citizensId' in args:
@@ -54,7 +54,7 @@ def search(args):
                 """select c.*, u.login as collector, u2.login as citizen
                     from claims c 
                         inner join users u on u.id = c.executor 
-                        inner join users u2 on u.id = c.creator 
+                        inner join users u2 on u2.id = c.creator 
                     where c.creator = %s""",
                 (args['citizensId']))
         else:
