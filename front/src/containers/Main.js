@@ -13,6 +13,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MailIcon from '@material-ui/icons/Mail';
 import MenuIcon from '@material-ui/icons/Menu';
+import DoneAll from '@material-ui/icons/DoneAll';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import {withStyles} from '@material-ui/core/styles';
@@ -21,6 +22,7 @@ import {connect} from 'react-redux';
 import {userLogout} from "../redux/actions";
 import Citizen from "../components/Citizen";
 import Collector from "../components/Collector";
+import Stats from "../components/Stats";
 
 const drawerWidth = 240;
 
@@ -69,6 +71,22 @@ class App extends Component {
         this.setState(state => ({mobileOpen: !state.mobileOpen}));
     };
 
+    getIcon = (iconId) => {
+        if (iconId === 0)
+            return (
+                <InboxIcon/>
+            )
+        if (iconId === 1)
+            return (
+                <DoneAll/>
+            )
+        if (iconId === 2)
+            return (
+                <MailIcon/>
+            )
+        return null
+    }
+
     render() {
         const {classes, theme, isLoggedIn, userLogout, userRole} = this.props;
 
@@ -85,13 +103,19 @@ class App extends Component {
                 <List>
                     <Link to="/app">
                         <ListItem button key="app">
-                            <ListItemIcon>{0 % 2 === 0 ? <InboxIcon/> : <MailIcon/>}</ListItemIcon>
+                            <ListItemIcon>{this.getIcon(0)}</ListItemIcon>
                             <ListItemText primary="Главная"/>
+                        </ListItem>
+                    </Link>
+                    <Link to="/app/stats">
+                        <ListItem button key="stats">
+                            <ListItemIcon>{this.getIcon(1)}</ListItemIcon>
+                            <ListItemText primary="Доcтижения"/>
                         </ListItem>
                     </Link>
                     <Link to="/app/about">
                         <ListItem button key="about">
-                            <ListItemIcon>{1 % 2 === 0 ? <InboxIcon/> : <MailIcon/>}</ListItemIcon>
+                            <ListItemIcon>{this.getIcon(2)}</ListItemIcon>
                             <ListItemText primary="O..."/>
                         </ListItem>
                     </Link>
@@ -159,7 +183,13 @@ class App extends Component {
                 <main className={classes.content}>
                     <div className={classes.toolbar}/>
                     {
-                        userRole === 'citizen' ? (<Citizen/>) : (<Collector/>)
+                        <Switch>
+                            <Route exact path="/app/stats" component={Stats}/>
+                        </Switch>
+                        // isStatsPage ? 
+                        //     (<Stats/>) :
+                        //     (userRole === 'citizen' ? (<Citizen/>) : (<Collector/>))
+                        //<Route exact path="/stats" component={Stats}/>
                     }
                     {/*<Switch>*/}
                     {/*<Route exact path={`/${match.url}`} render={() => {*/}
