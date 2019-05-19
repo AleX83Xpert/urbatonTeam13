@@ -29,7 +29,7 @@ def add(args, collector_id, citizen_id):
             cursor.execute('insert into claim_params (claim, code, value) values (%s, %s, %s);',
                            (claim_id, key, value))
 
-    return jsonify([collector_id, citizen_id, args])
+    return jsonify({"id": claim_id})
 
 
 @bp_claim.route('/search', methods=["GET"])
