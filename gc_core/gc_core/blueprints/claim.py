@@ -4,9 +4,24 @@ from webargs.flaskparser import use_args
 
 from gc_core.utils import get_conn, for_auth
 
+import time
+
 
 bp_claim = Blueprint("claims", __name__)
 
+add_args = {
+    "garbage_type": fields.Str(required=True)
+}
+
+search_args = {
+    "citizensId": fields.Integer(required=False),
+    "collectorsId": fields.Integer(required=False)
+}
+
+put_args = {
+    "measurementUnit": fields.Str(required=False),
+    "amount": fields.Float(required=False)
+}
 
 @bp_claim.route('/<collector_id>/<citizen_id>', methods=["POST"])
 @use_args({
@@ -16,7 +31,7 @@ bp_claim = Blueprint("claims", __name__)
 def add(args, collector_id, citizen_id):
     conn = get_conn()
     with conn.cursor() as cursor:
-        cursor.execute("insert into claims (create_time, state, creator, executor) values (now(), 0, %s, %s);",
+        cursor.execute("insert into claims (create_time, state, creator, executor) values (now(), 'new', %s, %s);",
                        (citizen_id, collector_id))
         cursor.execute('SELECT LAST_INSERT_ID() as id FROM claims')
         claim_id = cursor.fetchone()['id']
@@ -87,5 +102,36 @@ def delete(id):
     "amount": fields.Float(required=True)
 })
 def put(args, id, state):
-    return jsonify([id, args, state])
+    conn = get_conn()
+    with conn.cursor() as cursor:
+        cursor.execute('select * from claims where id = %s', (id))
+        result = cursor.fetchone()
+        result['params'] = {}
+        cursor.execute('select * from claim_params where claim = %s', (id))
+        res = cursor.fetchall()
+        for raw in res.values():
+            result['params'][raw['code']] = raw['value']
+
+        citizenId = result['creator']
+        collectorId = result['executor']
+        timestampTicks = int(time.time() * 10000000)
+        if state == "done":
+            if args.get("amount", None) == None:
+                raise RuntimeError("Claim state 'done' but amount not found")
+            lotJson = jsonify({
+                "LotType": result['params']['type'],
+                "Quantity": {
+                    "MeasurementUnit": args["measurementUnit"],
+                    "Value": args["amount"]
+                }
+            })
+            cursor.execute('insert into events (CitizenId, CollectorId, TimestampTicks, LotJson) values (%s, %s, %s, %s);', (citizenId, collectorId, timestampTicks,lotJson))    
+
+            for key, value in args.items():  
+                cursor.execute('insert ignore into claim_params (claim, code, value) values (%s, %s, %s);', (id, key, value))
+        cursor.execute('update claims set state = "%s" where id = %s', (state, id))
+
+
+
+
 
