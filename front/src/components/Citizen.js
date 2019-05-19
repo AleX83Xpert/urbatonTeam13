@@ -54,6 +54,12 @@ class Citizen extends Component {
     componentDidMount() {
         //эмуляция задержки запроса к серверу
         apiGetGarbageTypes(types=>{
+          getCollectors(types,data =>{
+            this.setState({
+              collectors:data,
+            });
+
+          });
           this.setState({
               garbageTypes:types
           });
@@ -70,12 +76,7 @@ class Citizen extends Component {
                 ]
             });
         }, 1000);*/
-        getCollectors(types, ()=>{
-          this.setState({
-            collectors:types
-          });
 
-        });
 
     }
 
@@ -151,11 +152,11 @@ itemClickHandler = item => {
                   <List component="nav">
 
                       {collectors.map((collector) => (
-                        <ListItem key = {'item${collector.id}'} /**/>
+                        <ListItem key = {`item${collector.id}`} /**/>
                           <ListItemText
 
 
-                              primary = {'${collector.id}, ${collector.name}, ${collector.adress}'} button onClick={() => {
+                              primary = {`${collector.id}, ${collector.name}, ${collector.address}`} button onClick={() => {
 
 
 
@@ -167,13 +168,7 @@ itemClickHandler = item => {
 
 
                   </DialogContentText>
-                  <TextField
-                      label="Сколько килограмм?"
-                      type="number"
-
-                      autoFocus
-
-                  />
+                  
               </DialogContent>
               <DialogActions>
                   <Button onClick={() => {
