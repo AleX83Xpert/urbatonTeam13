@@ -1,9 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 namespace Gamefication.DTO
 {
-    [ComplexType]
     public class Lot
     {
         public LotType LotType { get; set; }

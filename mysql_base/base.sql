@@ -82,7 +82,7 @@ CREATE TABLE garbage_collector.gamefication_state (
   `UserId` bigint(20) NOT NULL,
   `Loyalty` double NOT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
 
 CREATE TABLE garbage_collector.events (
   `Id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -91,13 +91,13 @@ CREATE TABLE garbage_collector.events (
   `TimestampTicks` bigint(20) NOT NULL,
   `LotJson` text,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
 
 CREATE TABLE garbage_collector.last_processed_event (
   `Id` bigint(20) NOT NULL,
   `EventId` bigint(20) NOT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
 
 insert into garbage_types values ('glass', 'Стекло', 'кг'), ('plastic', 'Пластик', 'кг'), ('metal', 'Метал', 'кг');
 

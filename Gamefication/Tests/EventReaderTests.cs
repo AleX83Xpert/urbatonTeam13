@@ -48,7 +48,7 @@ namespace Tests
                             Quantity = new Quantity
                             {
                                 MeasurementUnit = "kg",
-                                Value = (decimal) random.NextDouble()
+                                Value = random.NextDouble()
                             }
                         })
                     });
