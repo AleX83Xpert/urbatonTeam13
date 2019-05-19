@@ -130,7 +130,7 @@ def put(args, id, state):
         result['params'] = {}
         cursor.execute('select * from claim_params where claim = %s', (id))
         res = cursor.fetchall()
-        for raw in res.values():
+        for raw in res:
             result['params'][raw['code']] = raw['value']
 
         citizenId = result['creator']
@@ -158,7 +158,4 @@ def put(args, id, state):
         logger.info("END METHOD: %s" % state)
         cursor.execute('update claims set state = %s where id = %s', (state, id))
 
-
-
-
-
+    return jsonify("OK")
