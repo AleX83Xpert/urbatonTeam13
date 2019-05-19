@@ -28,19 +28,19 @@ def check_auth(*roles):
     def wrapper(func):
         @wraps(func)
         def wrap(*arg, **kw):
-            logger.info("SESSION: %s" % session)
-
-            # find session
-            if "username" in session and session["expire"] > datetime.datetime.now():
-                session["expire"] = datetime.datetime.now() + env.expire_delta
-
-                logger.info(roles)
-                if session["role"] not in roles:
-                    abort(403)
+            # logger.info("SESSION: %s" % session)
+            #
+            # # find session
+            # if "username" in session and session["expire"] > datetime.datetime.now():
+            #     session["expire"] = datetime.datetime.now() + env.expire_delta
+            #
+            #     logger.info(roles)
+            #     if session["role"] not in roles:
+            #         abort(403)
 
                 return func(*arg, **kw)
-            else:
-                abort(401)
+            # else:
+            #     abort(401)
 
         return wrap
     return wrapper
