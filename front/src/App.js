@@ -3,6 +3,7 @@ import {Redirect, Route, Switch} from "react-router-dom";
 import {connect} from 'react-redux';
 import './App.css';
 import SignIn from "./containers/SignIn";
+import SignUp from "./containers/SignUp";
 import Main from './containers/Main';
 import {ConnectedRouter} from 'connected-react-router'
 
@@ -23,6 +24,7 @@ function App(props) {
                         }}/>
                         <Route path="/app" component={Main}/>
                         <Route path="/login" component={SignIn}/>
+                        <Route path="/signup" component={SignUp}/>
                     </Switch>
                 </div>
             </div>

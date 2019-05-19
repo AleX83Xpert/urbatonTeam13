@@ -1,7 +1,12 @@
+export const ACTION_REG = 'ACTION_REG';
 export const ACTION_LOGIN = 'ACTION_LOGIN';
 export const ACTION_LOGOUT = 'ACTION_LOGOUT';
 export const ACTION_SET_USER_ID = 'ACTION_SET_USER_ID';
 export const ACTION_SET_USER_ROLE = 'ACTION_SET_USER_ROLE';
+
+export const userReg = () => ({
+    type: ACTION_REG,
+});
 
 export const userLogin = () => ({
     type: ACTION_LOGIN,

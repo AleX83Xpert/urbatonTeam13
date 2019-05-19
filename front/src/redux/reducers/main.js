@@ -1,7 +1,12 @@
-import {ACTION_LOGIN, ACTION_LOGOUT, ACTION_SET_USER_ID, ACTION_SET_USER_ROLE} from "../actions";
+import {ACTION_REG, ACTION_LOGIN, ACTION_LOGOUT, ACTION_SET_USER_ID, ACTION_SET_USER_ROLE} from "../actions";
 
 const mainReducer = (state = 0, action) => {
     switch (action.type) {
+        case ACTION_REG:
+            return {
+                ...state,
+                isRegistered: true
+            };
         case ACTION_LOGIN:
             return {
                 ...state,

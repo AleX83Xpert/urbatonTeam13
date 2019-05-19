@@ -17,6 +17,20 @@ export const apiLogin = (login, password, cb) => {
     });
 };
 
+export const apiSignUp = (login, password, cb) => {
+    const url = `${apiUrl}/citizens/`;
+    console.log(url);
+    axios.post(url, {
+        login: login,
+        password: password
+    }, {withCredentials: true}).then(res => {
+        console.log(res);
+        const {data} = res;
+        cb(data.id, data.role);
+    }).catch(err => {
+    });
+};
+
 /**
  * Claims by collector id
  * @param collectorId
