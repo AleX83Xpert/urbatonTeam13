@@ -100,6 +100,8 @@ class App extends Component {
                 <List>
                     <ListItem button key="logout" onClick={() => {
                         userLogout();
+                        localStorage.removeItem('userId');
+                        localStorage.removeItem('userRole');
                     }}>
                         <ListItemIcon>{2 % 2 === 0 ? <InboxIcon/> : <MailIcon/>}</ListItemIcon>
                         <ListItemText primary="Выйти"/>

@@ -69,6 +69,8 @@ class SignIn extends Component {
             setUserId(id);
             setUserRole(role);
             userLogin();
+            localStorage.setItem('userId', id);
+            localStorage.setItem('userRole', role);
         });
     };
 
