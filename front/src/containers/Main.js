@@ -136,7 +136,7 @@ class App extends Component {
                     <Link to="/app/about">
                         <ListItem button key="about" onClick={() => this.handleMenuItemClick("about")}>
                             <ListItemIcon>{this.getIcon(2)}</ListItemIcon>
-                            <ListItemText primary="O..."/>
+                            <ListItemText primary="O нас"/>
                         </ListItem>
                     </Link>
                 </List>
