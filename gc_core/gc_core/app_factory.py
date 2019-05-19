@@ -13,8 +13,14 @@ def factory():
     mount(app)
     sessionify(app)
     CORS(app)
+    app.after_request(with_headers)
     return app
 
 
 def setup_logging():
     logging.basicConfig(level=logging.INFO)
+
+
+def with_headers(response):
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
+    return response
