@@ -3,7 +3,7 @@ from webargs import fields
 from webargs.flaskparser import use_args
 from hashlib import md5
 
-from gc_core.utils import get_conn, for_collector, execute_all, execute_one
+from gc_core.utils import get_conn, for_collector, execute_all, execute_one, get_last_id
 
 
 bp_citizen = Blueprint("citizens", __name__)
@@ -35,8 +35,8 @@ def add(args):
     request = "INSERT INTO garbage_collector.`users` VALUES (null, %s, %s, now(), 'citizen')"
     citizen_info = (args["login"], passowrd_hash)
     execute_one(request, citizen_info)
-    id = execute_one("SELECT LAST_INSERT_ID() FROM garbage_collector.`users`", ())
-    return jsonify({"id": id["LAST_INSERT_ID()"]})
+    id = get_last_id("`users`")
+    return jsonify({"id": id})
 
 @bp_citizen.route("/<id>", methods=["DELETE"])
 def delete(id):

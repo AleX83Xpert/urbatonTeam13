@@ -92,3 +92,7 @@ def execute_one(request, args = ()):
     with conn.cursor() as cursor:
         cursor.execute(request, args)
         return cursor.fetchone()
+
+def get_last_id(table):
+    id = execute_one("SELECT LAST_INSERT_ID() FROM garbage_collector." + table, ())
+    return id["LAST_INSERT_ID()"]
