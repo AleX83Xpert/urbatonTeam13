@@ -1,27 +1,16 @@
-from flask import Blueprint, jsonify
+import json
+
+from flask import Blueprint, jsonify, session
 from webargs import fields
 from webargs.flaskparser import use_args
 
-from gc_core.utils import get_conn, for_auth
+from gc_core.utils import get_conn, for_auth, for_collector
 
 import time
 
 
 bp_claim = Blueprint("claims", __name__)
 
-add_args = {
-    "garbage_type": fields.Str(required=True)
-}
-
-search_args = {
-    "citizensId": fields.Integer(required=False),
-    "collectorsId": fields.Integer(required=False)
-}
-
-put_args = {
-    "measurementUnit": fields.Str(required=False),
-    "amount": fields.Float(required=False)
-}
 
 @bp_claim.route('/<collector_id>/<citizen_id>', methods=["POST"])
 @use_args({
@@ -52,9 +41,9 @@ def add(args, collector_id, citizen_id):
 def search(args):
     conn = get_conn()
     with conn.cursor() as cursor:
-        if 'collectorsId' in args:
+        if 'collectorsId' in args and session['role'] == 'citizen':
             cursor.execute('select * from claims where executor = %s', (args['collectorsId']))
-        elif 'citizensId' in args:
+        elif 'citizensId' in args and session['role'] == 'collector':
             cursor.execute('select * from claims where creator = %s', (args['citizensId']))
         else:
             return jsonify(None)
@@ -102,6 +91,7 @@ def delete(id):
     "measurementUnit": fields.Str(required=True),
     "amount": fields.Float(required=True)
 })
+@for_collector
 def put(args, id, state):
     conn = get_conn()
     with conn.cursor() as cursor:
@@ -119,7 +109,7 @@ def put(args, id, state):
         if state == "done":
             if args.get("amount", None) is None or args.get("measurementUnit", None) is None:
                 raise RuntimeError("Claim state 'done' but amount not found")
-            lotJson = jsonify({
+            lotJson = json.dumps({
                 "LotType": result['params']['garbage_type'],
                 "Quantity": {
                     "MeasurementUnit": args["measurementUnit"],
