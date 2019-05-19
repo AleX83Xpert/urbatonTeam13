@@ -74,38 +74,38 @@ class App extends Component {
             mobileOpen: oldState.mobileOpen,
             menuSelected: item
         }))
-    }
+    };
 
     handleDrawerToggle = () => {
         this.setState(state => ({mobileOpen: !state.mobileOpen}));
     };
 
     drawChild = (selectedMenuItem, userRole) => {
-        switch(selectedMenuItem){
+        switch (selectedMenuItem) {
             case "app":
-                return userRole === 'citizen' ? (<Citizen/>) : (<Collector/>)
+                return userRole === 'citizen' ? (<Citizen/>) : (<Collector/>);
             case "stats":
-                return (<Stats/>)
+                return (<Stats/>);
             case "about":
-                return (<About/>)
+                return (<About/>);
         }
-    }
+    };
 
     getIcon = (iconId) => {
         if (iconId === 0)
             return (
                 <InboxIcon/>
-            )
+            );
         if (iconId === 1)
             return (
                 <DoneAll/>
-            )
+            );
         if (iconId === 2)
             return (
                 <MailIcon/>
-            )
+            );
         return null
-    }
+    };
 
     render() {
         const {classes, theme, isLoggedIn, userLogout, userRole} = this.props;
