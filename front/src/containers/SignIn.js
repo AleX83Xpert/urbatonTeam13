@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {Redirect} from "react-router-dom";
+import {Redirect, Link} from "react-router-dom";
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -138,15 +138,7 @@ class SignIn extends Component {
                         >
                             Войти
                         </Button>
-                        <Button
-                            type="button"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            onClick={this.goReg}
-                        >
-                            Зарегистрироваться
-                        </Button>
+                        <Link to="/signup" style={{marginTop: '24px'}}>Зарегистрироваться</Link>
                     </form>
                 </Paper>
             </main>

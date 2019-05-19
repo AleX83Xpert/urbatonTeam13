@@ -6,7 +6,7 @@ import {withStyles} from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import {apiGetGarbageTypes}from '../utils/api';
+import {apiAcceptGarbage, apiGetGarbageTypes} from '../utils/api';
 import {apiGetCollectors} from '../utils/api';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -20,21 +20,21 @@ import Button from '@material-ui/core/Button';
 
 
 const styles = theme => ({
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    width: 800,
-  },
-  dense: {
-    marginTop: 19,
-  },
-  menu: {
-    width: 200,
-  },
+    container: {
+        display: 'flex',
+        flexWrap: 'wrap',
+    },
+    textField: {
+        marginLeft: theme.spacing.unit,
+        marginRight: theme.spacing.unit,
+        width: '90%',
+    },
+    dense: {
+        marginTop: 19,
+    },
+    menu: {
+        width: 200,
+    },
 });
 
 
@@ -44,192 +44,119 @@ class Citizen extends Component {
         super(props);
         this.state = {
             garbageTypes: [],
-            search:[],
-            click:null,
-            collectors: [],
+            selectedGarbageType: null,
+            searchGarbageType: '',
 
+            collectors: [],
+            selectedCollector: null,
+            searchCollector: '',
         };
     }
 
     componentDidMount() {
-        //эмуляция задержки запроса к серверу
-        apiGetGarbageTypes(types=>{
-          apiGetCollectors(types,data =>{
-            this.setState({
-              collectors:data,
-            });
-
-          });
-          this.setState({
-              garbageTypes:types
-          });
+        apiGetGarbageTypes(types => {
+            this.setState({garbageTypes: types});
         });
-
-        /*setTimeout(() => {
-            this.setState({
-                garbageTypes: [
-                    {id: 'glass', title: 'Стекло'},
-                    {id: 'plastic', title: 'Пластик'},
-                    {id: 'metall', title: 'Металл'},
-                    {id: 'wood', title: 'Дерево'},
-                    {id: 'clothes', title: 'Одежда/тряпки'}
-                ]
-            });
-        }, 1000);*/
-
-
+        // apiGetCollectors(types, data => {
+        //     this.setState({
+        //         collectors: data,
+        //     });
+        // });
     }
 
+    garbageTypeChangeHandler = e => {
+        this.setState({searchGarbageType: e.target.value});
+    };
 
-
-
-    /*function findArrayElementByTitle(array, title) {
-        return array.find((element) => {
-          return element.title === title;
-        })
-      }*/
-   searchType = e => {
-          const value = e.target.value.toLowerCase();
-
-           const filter = this.state.garbageTypes.filter(type => {
-          return type.title.toLowerCase().includes(value);
-    });
-    this.setState({
-        search: filter,
-        value:value
-    });
-
-
-};
-
-itemClickHandler = item => {
-  const {click} = this.props;
-
-  this.setState({
-    click: (click !== null ? 1 : null),
-    item: item,
-  });
-};
-
-
-
+    collectorChangeHandler = e => {
+        this.setState({searchCollector: e.target.value});
+    };
 
     render() {
-        const {classes, fullScreen} = this.props;
-        const {garbageTypes,search,value,currentItem,click, item1, collectors} = this.state;
-        const types = [];
-        for (const type of garbageTypes) {
-            types.push(<div>{type.title}</div>);
-        }
-        const tt = search.length === 0 ? null : (
-
-          <div>
-            <List component="nav">
-
-                {search.map((item) => (
-                  <ListItem key = {'item${item.id}'} /**/>
-                    <ListItemText
-
-
-                        primary = {item.title} button onClick={() => {
-
-                            this.itemClickHandler(item.title);
-
-
-                        }}/>
-                  </ListItem>
-                  ))}
-          </List>
-          <Dialog
-              fullScreen={fullScreen}
-              open={click !== null}
-              aria-labelledby="responsive-dialog-title"
-          >
-              <DialogTitle id="responsive-dialog-title">{this.state.item}</DialogTitle>
-              <DialogContent>
-                  <DialogContentText>
-
-                  <List component="nav">
-
-                      {collectors.map((collector) => (
-                        <ListItem key = {`item${collector.id}`} /**/>
-                          <ListItemText
-
-
-                              primary = {`${collector.id}, ${collector.name}, ${collector.address}`} button onClick={() => {
-
-
-
-
-                              }}/>
-                        </ListItem>
-                        ))}
-                </List>
-
-
-                  </DialogContentText>
-                  
-              </DialogContent>
-              <DialogActions>
-                  <Button onClick={() => {
-                      this.setState({
-                          click: null
-                      });
-                  }} color="primary">
-                      Отмена
-                  </Button>
-
-              </DialogActions>
-          </Dialog>
-
-          </div>);
-/*
-             <List component="nav">
-                 {claims.map(claim => (
-                     <ListItem key={`claim${claim.id}`} alignItems="flex-start" button onClick={() => {
-                         this.claimClickHandler(claim.id)
-                     }}>
-                         <ListItemAvatar>
-                             <Avatar alt={claim.citizenLogin}
-                                     src="https://material-ui.com/static/images/avatar/1.jpg"/>
-                         </ListItemAvatar>
-                         <ListItemText
-                             primary={`${claim.citizenLogin}, ${claim.garbageType}`}
-                             secondary={
-                                 <React.Fragment>
-                                     <Typography component="span" className={classes.inline} color="textPrimary">
-                                         {claim.createdDttm.toLocaleString()}
-                                     </Typography>
-                                     {claim.address}
-                                 </React.Fragment>
-                             }
-                         />
-                     </ListItem>
-                 ))}
-             </List>*/
-
-
-
-        console.log(tt);
+        const {classes, userId} = this.props;
+        const {garbageTypes, selectedGarbageType, searchGarbageType, collectors, selectedCollector, searchCollector} = this.state;
         return (
-
             <div>
-                <h1>Строка поиска</h1>
-                <TextField
-                  id="standard-search"
-                  label={"Выберите тип"}
-                  type="search"
-                  className={classes.textField}
-                  margin="normal"
-                  onChange={this.searchType}
-                  value={value}
-                />
-
-                {tt}
+                {selectedGarbageType == null && <div>
+                    <TextField
+                        className={classes.textField}
+                        label="Введите тип мусора (стекло, пластик, мебель,...)"
+                        value={searchGarbageType}
+                        onChange={this.garbageTypeChangeHandler}
+                        disabled={this.state.selectedGarbageType !== null}
+                    />
+                    {searchGarbageType && searchGarbageType !== '' && <List component="nav">
+                        {
+                            garbageTypes.filter(type => type.name.toLowerCase().indexOf(searchGarbageType.toLowerCase()) >= 0).map(type => {
+                                return (
+                                    <ListItem key={`claim${type.code}`} alignItems="flex-start" button
+                                              onClick={() => {
+                                                  this.setState({
+                                                      selectedGarbageType: type,
+                                                      searchGarbageType: type.name
+                                                  }, () => {
+                                                      apiGetCollectors(this.state.selectedGarbageType.code, collectors => {
+                                                          this.setState({collectors});
+                                                      });
+                                                  });
+                                              }}>
+                                        <ListItemText
+                                            primary={`${type.name}`}
+                                            secondary=""
+                                        />
+                                    </ListItem>
+                                );
+                            })
+                        }
+                    </List>}
+                </div>}
+                {selectedGarbageType !== null && collectors.length > 0 && <TextField
+                    className={classes.textField}
+                    label="Выберите сборщика"
+                    value={searchGarbageType}
+                    onChange={this.garbageTypeChangeHandler}
+                />}
+                {selectedGarbageType !== null && selectedCollector === null && collectors.length > 0 && selectedCollector === null &&
+                <div>
+                    <h5>Выберите сборщика</h5>
+                    <List component="nav">
+                        {
+                            collectors.map(collector => {
+                                return (
+                                    <ListItem key={`claim${collector.id}`} alignItems="flex-start" button
+                                              onClick={() => {
+                                                  this.setState({
+                                                      selectedCollector: collector,
+                                                  });
+                                              }}>
+                                        <ListItemText
+                                            primary={`${collector.params.name} ${parseInt(collector.params.on_export) === 1 ? 'Доступен вывоз' : ''}`}
+                                            secondary={collector.address}
+                                        />
+                                    </ListItem>
+                                );
+                            })
+                        }
+                    </List>
+                </div>}
+                {selectedCollector !== null && <div>Сборщик: {selectedCollector.params.name}</div>}
+                {selectedCollector !== null &&
+                <Button variant="contained"
+                        color="primary"
+                        onClick={e => {
+                            const isCall = parseInt(selectedCollector.params.on_export) === 1;//Вызов к себе
+                            // alert(isCall ? 'вызов' : 'Сдать');
+                            apiAcceptGarbage(selectedCollector.id, userId, selectedGarbageType.code, 0, data => {
+                                console.log('claim created', data);
+                                if (isCall) {
+                                    alert('Окей, к вам приедет мусорщик, ждите!');
+                                } else {
+                                    alert('Подойдите по адресу ' + selectedCollector.address + '! Не забудьте взять мусор :)');
+                                }
+                                window.location.reload();
+                            }, isCall);
+                        }}>{parseInt(selectedCollector.params.on_export) === 1 ? 'Вызвать' : 'Сдать мусор'}</Button>}
             </div>
-
-
-
         );
     }
 }

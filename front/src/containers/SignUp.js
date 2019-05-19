@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {Redirect} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,7 +12,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
-import {userReg, setUserId, setUserRole} from "../redux/actions";
+import {userLogin, setUserId, setUserRole} from "../redux/actions";
 import {apiSignUp} from "../utils/api";
 
 const styles = theme => ({
@@ -63,15 +63,14 @@ class SignUn extends Component {
 
     doRegister = event => {
         event.preventDefault();
-        const {userReg, setUserId, setUserRole} = this.props;
+        const {userLogin, setUserId, setUserRole} = this.props;
         const {login, password} = this.state;
         apiSignUp(login, password, (id, role) => {
             setUserId(id);
             setUserRole(role);
-            userReg();
-            this.setState({
-                isRegistered: true
-            });
+            userLogin();
+            localStorage.setItem('userId', id);
+            localStorage.setItem('userRole', role);
         });
     };
 
@@ -129,6 +128,7 @@ class SignUn extends Component {
                         >
                             Зарегистрироваться
                         </Button>
+                        <Link to="/login" style={{marginTop: '24px'}}>Залогиниться</Link>
                     </form>
                 </Paper>
             </main>
@@ -143,7 +143,7 @@ const mapStateToProps = (state /*, ownProps*/) => {
     }
 };
 
-const mapDispatchToProps = {userReg, setUserId, setUserRole};
+const mapDispatchToProps = {userLogin, setUserId, setUserRole};
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SignUn));
 // export default SignUn;

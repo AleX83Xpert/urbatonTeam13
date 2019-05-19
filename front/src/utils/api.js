@@ -50,14 +50,14 @@ export const apiGetClaims = (collectorId, cb) => {
         });
 };
 
-export const apiAcceptGarbage = (collectorId, citizenId, garbageType, weight, cb) => {
+export const apiAcceptGarbage = (collectorId, citizenId, garbageType, weight, cb, isCall = false) => {
     const url = `${apiUrl}/claims/${collectorId}/${citizenId}`;
     console.log(url);
 
     axios.post(url, {
         garbage_type: garbageType,
         params: {
-            address: `Екатеринбург, Ленина ${Math.floor(Math.random() * Math.floor(100))}`
+            address: isCall ? `Екатеринбург, Ленина ${Math.floor(Math.random() * Math.floor(100))}` : ''
         }
     })
         .then(res => {
