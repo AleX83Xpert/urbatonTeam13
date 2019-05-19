@@ -23,6 +23,7 @@ import {userLogout} from "../redux/actions";
 import Citizen from "../components/Citizen";
 import Collector from "../components/Collector";
 import Stats from "../components/Stats";
+import About from "../components/About";
 
 const drawerWidth = 240;
 
@@ -64,12 +65,31 @@ class App extends Component {
         super(props);
         this.state = {
             mobileOpen: false,
+            menuSelected: "app"
         };
+    }
+
+    handleMenuItemClick = (item) => {
+        this.setState(oldState => ({
+            mobileOpen: oldState.mobileOpen,
+            menuSelected: item
+        }))
     }
 
     handleDrawerToggle = () => {
         this.setState(state => ({mobileOpen: !state.mobileOpen}));
     };
+
+    drawChild = (selectedMenuItem, userRole) => {
+        switch(selectedMenuItem){
+            case "app":
+                return userRole === 'citizen' ? (<Citizen/>) : (<Collector/>)
+            case "stats":
+                return (<Stats/>)
+            case "about":
+                return (<About/>)
+        }
+    }
 
     getIcon = (iconId) => {
         if (iconId === 0)
@@ -102,19 +122,19 @@ class App extends Component {
                 <Divider/>
                 <List>
                     <Link to="/app">
-                        <ListItem button key="app">
+                        <ListItem button key="app" onClick={() => this.handleMenuItemClick("app")}>
                             <ListItemIcon>{this.getIcon(0)}</ListItemIcon>
                             <ListItemText primary="Главная"/>
                         </ListItem>
                     </Link>
                     <Link to="/app/stats">
-                        <ListItem button key="stats">
+                        <ListItem button key="stats" onClick={() => this.handleMenuItemClick("stats")}>
                             <ListItemIcon>{this.getIcon(1)}</ListItemIcon>
                             <ListItemText primary="Доcтижения"/>
                         </ListItem>
                     </Link>
                     <Link to="/app/about">
-                        <ListItem button key="about">
+                        <ListItem button key="about" onClick={() => this.handleMenuItemClick("about")}>
                             <ListItemIcon>{this.getIcon(2)}</ListItemIcon>
                             <ListItemText primary="O..."/>
                         </ListItem>
@@ -182,25 +202,7 @@ class App extends Component {
                 </nav>
                 <main className={classes.content}>
                     <div className={classes.toolbar}/>
-                    {
-                        <Switch>
-                            <Route exact path="/app/stats" component={Stats}/>
-                        </Switch>
-                        // isStatsPage ? 
-                        //     (<Stats/>) :
-                        //     (userRole === 'citizen' ? (<Citizen/>) : (<Collector/>))
-                        //<Route exact path="/stats" component={Stats}/>
-                    }
-                    {/*<Switch>*/}
-                    {/*<Route exact path={`/${match.url}`} render={() => {*/}
-                    {/*if (userRole === 'citizen') {*/}
-                    {/*return <Citizen/>;*/}
-                    {/*} else {*/}
-                    {/*return <Collector/>;*/}
-                    {/*}*/}
-                    {/*}}/>*/}
-                    {/*<Route path={`/${match.url}/about`} component={About}/>*/}
-                    {/*</Switch>*/}
+                    {this.drawChild(this.state.menuSelected, userRole)}
                 </main>
             </div>
         );
