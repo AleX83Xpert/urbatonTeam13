@@ -84,3 +84,6 @@ def close_conn(*_):
     if hasattr(g, 'connection'):
         g.connection.close()
         del g.connection
+
+
+_sentinel = object()
