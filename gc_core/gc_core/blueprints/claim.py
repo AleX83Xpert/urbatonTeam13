@@ -42,12 +42,27 @@ def search(args):
     conn = get_conn()
     with conn.cursor() as cursor:
         if 'collectorsId' in args:
-            cursor.execute('select * from claims where executor = %s', (args['collectorsId']))
+            cursor.execute('select c.*, u.login from claims c inner join users u on u.id = c.executor where c.executor = %s',
+                           (args['collectorsId']))
         elif 'citizensId' in args:
-            cursor.execute('select * from claims where creator = %s', (args['citizensId']))
+            cursor.execute('select c.*, u.login from claims c inner join users u on u.id = c.creator where c.creator = %s',
+                           (args['citizensId']))
         else:
             return jsonify(None)
         result = cursor.fetchall()
+
+        for row in result:
+            row['create_time'] = row['create_time'].strftime('%Y-%m-%d %H:%M:%S')
+            row['params'] = {}
+            cursor.execute('select * from claim_params where claim = %s', (row['id']))
+            res = cursor.fetchall()
+            for raw in res:
+                row['params'][raw['code']] = raw['value']
+
+            if 'garbage_type' in row['params']:
+                cursor.execute('select name from garbage_types where code = %s',
+                               (row['params']['garbage_type']))
+                row['params']['garbage_type'] = cursor.fetchone()['name']
 
     return jsonify(result)
 
