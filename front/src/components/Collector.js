@@ -188,12 +188,13 @@ class Collector extends Component {
                                         src={`https://material-ui.com/static/images/avatar/${index % 7 + 1}.jpg`}/>
                             </ListItemAvatar>
                             <ListItemText
-                                primary={`${index} ${claim.citizen}, ${claim.params.garbage_type}`}
+                                primary={`${claim.citizen}, ${claim.params.garbage_type}`}
                                 secondary={
                                     <React.Fragment>
                                         <Typography component="span" className={classes.inline} color="textPrimary">
                                             {claim.create_time.toLocaleString()}
                                         </Typography>
+                                        <br/>
                                         {claim.params.address}
                                     </React.Fragment>
                                 }

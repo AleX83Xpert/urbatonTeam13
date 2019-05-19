@@ -13,6 +13,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MailIcon from '@material-ui/icons/Mail';
 import MenuIcon from '@material-ui/icons/Menu';
+import DoneAll from '@material-ui/icons/DoneAll';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import {withStyles} from '@material-ui/core/styles';
@@ -21,6 +22,8 @@ import {connect} from 'react-redux';
 import {userLogout} from "../redux/actions";
 import Citizen from "../components/Citizen";
 import Collector from "../components/Collector";
+import Stats from "../components/Stats";
+import About from "../components/About";
 
 const drawerWidth = 240;
 
@@ -62,11 +65,46 @@ class App extends Component {
         super(props);
         this.state = {
             mobileOpen: false,
+            menuSelected: "app"
         };
     }
 
+    handleMenuItemClick = (item) => {
+        this.setState(oldState => ({
+            mobileOpen: oldState.mobileOpen,
+            menuSelected: item
+        }))
+    };
+
     handleDrawerToggle = () => {
         this.setState(state => ({mobileOpen: !state.mobileOpen}));
+    };
+
+    drawChild = (selectedMenuItem, userRole) => {
+        switch (selectedMenuItem) {
+            case "app":
+                return userRole === 'citizen' ? (<Citizen/>) : (<Collector/>);
+            case "stats":
+                return (<Stats/>);
+            case "about":
+                return (<About/>);
+        }
+    };
+
+    getIcon = (iconId) => {
+        if (iconId === 0)
+            return (
+                <InboxIcon/>
+            );
+        if (iconId === 1)
+            return (
+                <DoneAll/>
+            );
+        if (iconId === 2)
+            return (
+                <MailIcon/>
+            );
+        return null
     };
 
     render() {
@@ -84,14 +122,20 @@ class App extends Component {
                 <Divider/>
                 <List>
                     <Link to="/app">
-                        <ListItem button key="app">
-                            <ListItemIcon>{0 % 2 === 0 ? <InboxIcon/> : <MailIcon/>}</ListItemIcon>
+                        <ListItem button key="app" onClick={() => this.handleMenuItemClick("app")}>
+                            <ListItemIcon>{this.getIcon(0)}</ListItemIcon>
                             <ListItemText primary="Главная"/>
                         </ListItem>
                     </Link>
+                    <Link to="/app/stats">
+                        <ListItem button key="stats" onClick={() => this.handleMenuItemClick("stats")}>
+                            <ListItemIcon>{this.getIcon(1)}</ListItemIcon>
+                            <ListItemText primary="Доcтижения"/>
+                        </ListItem>
+                    </Link>
                     <Link to="/app/about">
-                        <ListItem button key="about">
-                            <ListItemIcon>{1 % 2 === 0 ? <InboxIcon/> : <MailIcon/>}</ListItemIcon>
+                        <ListItem button key="about" onClick={() => this.handleMenuItemClick("about")}>
+                            <ListItemIcon>{this.getIcon(2)}</ListItemIcon>
                             <ListItemText primary="O..."/>
                         </ListItem>
                     </Link>
@@ -158,19 +202,7 @@ class App extends Component {
                 </nav>
                 <main className={classes.content}>
                     <div className={classes.toolbar}/>
-                    {
-                        userRole === 'citizen' ? (<Citizen/>) : (<Collector/>)
-                    }
-                    {/*<Switch>*/}
-                    {/*<Route exact path={`/${match.url}`} render={() => {*/}
-                    {/*if (userRole === 'citizen') {*/}
-                    {/*return <Citizen/>;*/}
-                    {/*} else {*/}
-                    {/*return <Collector/>;*/}
-                    {/*}*/}
-                    {/*}}/>*/}
-                    {/*<Route path={`/${match.url}/about`} component={About}/>*/}
-                    {/*</Switch>*/}
+                    {this.drawChild(this.state.menuSelected, userRole)}
                 </main>
             </div>
         );
